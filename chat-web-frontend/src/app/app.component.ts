@@ -17,9 +17,5 @@ export class AppComponent {
   constructor( private router: Router
   ) {}
 
-  onClick(){
-    debugger
-    this.router.navigate(['/login']);
-  }
 
 }

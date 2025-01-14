@@ -3,16 +3,32 @@ import {AuthService} from '../../services/auth.service';
 import {Router, RouterOutlet} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatCardModule} from '@angular/material/card';
+import {MatError, MatFormFieldModule, MatLabel} from '@angular/material/form-field';
+import {MatIcon} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule,ReactiveFormsModule,RouterOutlet],
+  imports: [CommonModule,
+    ReactiveFormsModule,
+    RouterOutlet,
+  MatCardModule,
+  MatFormFieldModule,
+  MatLabel,
+  MatError,
+    MatIcon,
+    MatInputModule,
+    MatButtonModule
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
   loginForm: FormGroup;
   error: string = '';
+  hidePassword:boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +53,9 @@ export class LoginComponent {
         }
       });
     }
+  }
+  togglePasswordVisibility(): void{
+    this.hidePassword= !this.hidePassword;
   }
 }
 
