@@ -1,0 +1,104 @@
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  background-color: var(--white);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.app-title {
+  margin-left: 12px;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.content-container {
+  padding: 40px 20px;
+  flex: 1;
+  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+}
+
+.welcome-card {
+  max-width: 800px;
+  margin: 40px auto;
+  text-align: center;
+  padding: 40px;
+}
+
+.welcome-title {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.welcome-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin-bottom: 30px;
+}
+
+.features-container {
+  margin: 60px auto;
+  max-width: 1200px;
+}
+
+.feature-card {
+  height: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.feature-icon {
+  font-size: 40px;
+  height: 40px;
+  width: 40px;
+  color: var(--primary-color);
+}
+
+.feature-title {
+  margin: 20px 0 10px;
+  color: var(--primary-dark);
+}
+
+
+/* Login button styles */
+.login-btn {
+  background-color: transparent !important;
+  color: var(--button-color-1) !important;
+  border: 2px solid var(--button-color-1) !important;
+  transition: all 0.3s ease !important;
+}
+
+.login-btn:hover {
+  background-color: var(--button-color-2) !important;
+  color: var(--button-text-2) !important;
+  border-color: var(--button-color-2) !important;
+}
+
+/* Register button styles */
+.register-btn {
+  background-color: var(--button-color-2) !important;
+  color: var(--button-text-2) !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.register-btn:hover {
+  background-color: var(--button-color-1) !important;
+  color: var(--button-text-1) !important;
+}
+
+/* Add this if you want the icon color to match the text */
+.login-btn mat-icon, .register-btn mat-icon {
+  margin-right: 8px;
+}
+
+

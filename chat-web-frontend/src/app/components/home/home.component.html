@@ -1,0 +1,53 @@
+<div class="home-container">
+  <mat-toolbar class="toolbar">
+    <mat-icon color="primary">forum</mat-icon>
+    <span class="app-title">GuffChautari</span>
+    <span class="toolbar-spacer"></span>
+    <button mat-stroked-button class="login-btn" (click)="navigate('/login')">
+      Login
+    </button>
+    <button mat-raised-button class="register-btn" (click)="navigate('/register')">
+      Register
+    </button>
+  </mat-toolbar>
+
+  <div class="content-container">
+    <mat-card class="welcome-card">
+      <h1 class="welcome-title">Welcome to Guff Chautari</h1>
+      <p class="welcome-subtitle">
+        Experience real-time conversations in a modern, secure environment
+      </p>
+      <button mat-raised-button color="primary" class="get-started-btn" (click)="navigate('/register')">
+        Get Started
+      </button>
+    </mat-card>
+
+    <div class="features-container">
+      <mat-grid-list cols="3" rowHeight="300px" gutterSize="20">
+        <mat-grid-tile>
+          <mat-card class="feature-card">
+            <mat-icon class="feature-icon">group</mat-icon>
+            <h3 class="feature-title">Custom Rooms</h3>
+            <p>Create and join custom chat rooms for different topics and teams</p>
+          </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+          <mat-card class="feature-card">
+            <mat-icon class="feature-icon">lock</mat-icon>
+            <h3 class="feature-title">Secure Chats</h3>
+            <p>Your conversations are protected with enterprise-grade security</p>
+          </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+          <mat-card class="feature-card">
+            <mat-icon class="feature-icon">bolt</mat-icon>
+            <h3 class="feature-title">Real-time Updates</h3>
+            <p>Experience instant message delivery and live updates</p>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,72 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+:root {
+  --primary-color: #7B1FA2;      /* violet */
+  --primary-light: #9C27B0;
+  --primary-dark: #4A148C;
+  --accent-color: #FF4081;       /* pink */
+  --warn-color: #f44336;         /* red */
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --background-light: #f5f5f5;
+  --white: #ffffff;
+  --shadow-1: 0 2px 4px rgba(0,0,0,0.1);
+  --shadow-2: 0 4px 8px rgba(0,0,0,0.1);
+  /* Primary button colors */
+  --button-color-1: #6B46C1;    /* A rich purple */
+  --button-text-1: #ffffff;     /* White text */
+
+  /* Secondary button colors */
+  --button-color-2: #FF6B6B;    /* A warm coral */
+  --button-text-2: #ffffff;     /* White text */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: var(--text-primary);
+  background-color: var(--background-light);
+  line-height: 1.6;
+}
+
+.mat-mdc-raised-button, .mat-mdc-stroked-button {
+  margin: 0 16px !important;  /* Increased space between buttons */
+  height: 40px !important;
+  min-width: 100px !important;
+}
+
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+}
+
+.btn-accent {
+  background-color: var(--accent-color) !important;
+  color: var(--white) !important;
+}
+
+.mat-card {
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-1) !important;
+  transition: box-shadow 0.3s ease;
+}
+
+.mat-card:hover {
+  box-shadow: var(--shadow-2) !important;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: var(--primary-dark);
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 400;
+}
