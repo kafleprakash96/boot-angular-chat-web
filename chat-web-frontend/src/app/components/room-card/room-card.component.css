@@ -1,0 +1,25 @@
+.room-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    background-color: var(--white);
+  
+    &:hover {
+      transform: translateY(-5px);
+    }
+  
+    mat-card-title {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+  
+    mat-card-subtitle {
+      color: var(--text-secondary);
+    }
+  
+    mat-card-actions {
+      padding: 1rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+  

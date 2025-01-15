@@ -1,0 +1,45 @@
+.dialog-container {
+    padding: 20px;
+    max-width: 400px;
+  }
+  
+  .dialog-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .form-field {
+    margin-bottom: 16px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+  }
+  
+  /* Cancel button styling */
+  .cancel-button {
+    margin-right: 10px;
+  }
+  
+  /* Create Room button styling */
+  .create-room-button {
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  /* Custom spinner margin */
+  .spinner-margin {
+    margin-right: 8px;
+  }
+  
+  /* Optional - Style the dialog actions */
+  mat-dialog-actions {
+    padding-top: 16px;
+  }
+  

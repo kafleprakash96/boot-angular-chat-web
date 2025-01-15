@@ -8,6 +8,7 @@ import {MatError, MatFormFieldModule, MatLabel} from '@angular/material/form-fie
 import {MatIcon} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -20,38 +21,39 @@ import {MatButtonModule} from '@angular/material/button';
   MatError,
     MatIcon,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  error: string = '';
-  hidePassword:boolean = true;
+  hidePassword = true;
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      username: ['', Validators.required],  // Username field
+      password: ['', Validators.required]   // Password field
     });
   }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
-      this.authService.login(username, password).subscribe({
-        next: () => {
-          this.router.navigate(['/rooms']);
+      const loginData = this.loginForm.value;
+
+      this.http.post<any>('http://localhost:8080/api/v1/auth/login', loginData).subscribe(
+        (response:any) => {
+
+          localStorage.setItem('token', response.token);
+          console.log(response.token)
+          this.router.navigate(['/dashboard']);
         },
-        error: (error) => {
-          this.error = 'Invalid username or password';
+        (error:any) => {
+          // Handle error (e.g., show an error message)
+          alert('Login failed: ' + error.message);
         }
-      });
+      );
     }
   }
   togglePasswordVisibility(): void{

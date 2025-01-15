@@ -1,0 +1,24 @@
+<div class="chat-container">
+  <div class="chat-messages">
+    <div *ngFor="let message of messages" 
+         [ngClass]="{'message': true, 'own-message': message.sender === username}">
+      <div class="message-content">
+        {{ message.content }}
+      </div>
+      <div class="message-info">
+        Sent by {{ message.sender }} - {{ message.timestamp | date:'short' }}
+      </div>
+    </div>
+  </div>
+  
+  <div class="chat-input">
+    <mat-form-field appearance="outline" class="message-input">
+      <input matInput [(ngModel)]="newMessage" 
+             placeholder="Type a message..."
+             (keyup.enter)="sendMessage()">
+    </mat-form-field>
+    <button mat-fab color="primary" (click)="sendMessage()">
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>
