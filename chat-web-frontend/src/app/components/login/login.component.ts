@@ -14,7 +14,6 @@ import { HttpClient } from '@angular/common/http';
   selector: 'app-login',
   imports: [CommonModule,
     ReactiveFormsModule,
-    RouterOutlet,
   MatCardModule,
   MatFormFieldModule,
   MatLabel,

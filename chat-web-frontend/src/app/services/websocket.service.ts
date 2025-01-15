@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { Subject } from 'rxjs';
+import { Message } from '../interface/room';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketService {
   private client: Client;
-  private serverUrl: string = 'http://localhost:8080/ws';  // Note: Using http instead of ws
+  private serverUrl: string = 'http://localhost:8080/ws';
+  private messageSubject = new Subject<Message>();
+  public messages$ = this.messageSubject.asObservable();
 
   constructor() {
     this.client = new Client({
-      webSocketFactory: () => new SockJS(this.serverUrl),  // Use SockJS
+      webSocketFactory: () => new SockJS(this.serverUrl),
       connectHeaders: {
         Authorization: `Bearer ${this.getToken()}`
       },
       debug: (str) => {
-        console.log("At websocket debug");
         console.log(str);
       },
       reconnectDelay: 5000,
@@ -24,20 +27,32 @@ export class WebsocketService {
       heartbeatOutgoing: 4000
     });
 
-    this.client.onConnect = (frame) => {
-      console.log('Connected: ' + frame);
-      // Subscribe to topics here
-      this.client.subscribe('/topic/messages', message => {
-        console.log('Received: ' + message.body);
-      });
-    };
-
     this.client.onStompError = (frame) => {
       console.error('Broker reported error: ' + frame.headers['message']);
       console.error('Additional details: ' + frame.body);
     };
 
     this.client.activate();
+  }
+
+  subscribeToRoom(roomId: number) {
+    if (this.client.connected) {
+      console.log(`Subscribing to room ${roomId}`);
+      this.client.subscribe(`/topic/room/${roomId}`, message => {
+        console.log('Received message:', message.body);
+        const messageData: Message = JSON.parse(message.body);
+        this.messageSubject.next(messageData);
+      });
+    } else {
+      this.client.onConnect = () => {
+        console.log(`Subscribing to room ${roomId} after connect`);
+        this.client.subscribe(`/topic/room/${roomId}`, message => {
+          console.log('Received message:', message.body);
+          const messageData: Message = JSON.parse(message.body);
+          this.messageSubject.next(messageData);
+        });
+      }
+    }
   }
 
   sendMessage(message: any) {

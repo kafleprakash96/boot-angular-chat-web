@@ -6,9 +6,14 @@ export interface Room {
 }
 
 export interface Message {
-    id: number;
-    content: string;
-    sender: string;
-    timestamp: Date;
+
     seen: boolean;
+    id: number;
+  content: string;
+  sender: string;
+  timestamp: Date;
+  chatRoomId: number;
+  consumed: boolean;
+  seenby: string[];
+  replyToId?: number;
   }

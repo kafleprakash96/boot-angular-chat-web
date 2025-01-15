@@ -19,10 +19,9 @@ import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [MatFormField,RoomCardComponent,
-    MatLabel,
+  imports: [RoomCardComponent,
     FormsModule,
-    NgFor,NgIf,
+    NgFor,
     MatCardModule,MatToolbarModule,MatButtonModule,MatIconModule,MatMenuModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'

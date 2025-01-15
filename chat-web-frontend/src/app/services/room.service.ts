@@ -48,19 +48,20 @@ export class RoomService {
     );
   }
 
-  // Send a message to a specific room
-  sendMessage(roomId: number, content: string, sender: string, replyToId?: number): Observable<any> {
+  sendMessage(roomId: number, message: any): Observable<any> {
     const headers = new HttpHeaders().set(
       'Authorization',
       `Bearer ${this.getToken()}`
     );
-    const body = { content, sender, replyToId };
+
     return this.http.post(
       `${this.baseChatUrl}/room/${roomId}/send`,
-      body,
+      message, 
       { headers }
     );
   }
+  
+  
 
   // Get details of a specific room
   getRoom(roomId: number): Observable<Room> {
