@@ -18,9 +18,10 @@ public class ChatController {
     @PostMapping("/room/{roomId}/send")
     public ResponseEntity<?> sendMessage(@PathVariable Long roomId,
                                          @RequestParam String content,
-                                         @RequestParam String sender) {
+                                         @RequestParam String sender,
+                                         @RequestParam(required = false) Long replyToId) {
         try {
-            chatService.sendMessage(roomId, content, sender);
+            chatService.sendMessage(roomId, content, sender,replyToId);
             return ResponseEntity.ok("Message sent successfully");
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Failed to send message");

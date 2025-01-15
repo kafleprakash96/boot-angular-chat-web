@@ -71,7 +71,7 @@ public class ChatService {
         return chatMessageRepository.findByChatRoomIdOrderByTimestampDesc(roomId);
     }
 
-    public void sendMessage(Long roomId, String content, String sender){
+    public void sendMessage(Long roomId, String content, String sender,Long replyToId){
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(
                         ()->new RuntimeException("Room not found"));
@@ -82,6 +82,7 @@ public class ChatService {
         message.setTimestamp(LocalDateTime.now());
         message.setChatRoom(room);
         message.setConsumed(false);
+        message.setReplyToId(replyToId);
 
         ChatMessage savedMessage = chatMessageRepository.save(message);
 
