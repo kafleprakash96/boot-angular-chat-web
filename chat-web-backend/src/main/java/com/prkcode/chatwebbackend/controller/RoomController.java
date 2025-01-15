@@ -1,5 +1,6 @@
 package com.prkcode.chatwebbackend.controller;
 
+import com.prkcode.chatwebbackend.model.ChatMessage;
 import com.prkcode.chatwebbackend.model.ChatRoom;
 
 import com.prkcode.chatwebbackend.service.ChatService;
@@ -62,6 +63,23 @@ public class RoomController {
             return ResponseEntity.ok(createdRoom);
         } catch (Exception e) {
             return ResponseEntity.status(400).body(null);  // Bad request if room creation fails
+        }
+    }
+
+    @GetMapping("/{roomId}/messages")
+    public ResponseEntity<List<ChatMessage>> getMessagesForRoom(@PathVariable Long roomId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body(null);  // Unauthorized if not authenticated
+        }
+
+        try {
+            List<ChatMessage> messages = chatService.getMessagesForRoom(roomId);
+            if (messages == null) {
+                return ResponseEntity.status(404).body(null); // Room not found or no messages available
+            }
+            return ResponseEntity.ok(messages);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);  // Internal Server Error if something goes wrong
         }
     }
 }

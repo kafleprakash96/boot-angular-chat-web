@@ -62,7 +62,7 @@ public class ChatService {
                 .orElseThrow(() -> new RuntimeException("Room not found with id: " + roomId));
     }
 
-    public List<ChatMessage> getRoomMessages(Long roomId) {
+    public List<ChatMessage> findChatRoomId(Long roomId) {
         // First verify the room exists
         if (!chatRoomRepository.existsById(roomId)) {
             throw new RuntimeException("Room not found with id: " + roomId);
@@ -104,11 +104,20 @@ public class ChatService {
         message.getSeenby().add(username);
         chatMessageRepository.save(message);
 
+        //Todo
         //Assuming 2 users seen the message
         if(message.getSeenby().size() >=2){
             message.setConsumed(true);
             chatMessageRepository.save(message);
         }
+    }
+
+    public List<ChatMessage> getMessagesForRoom(Long roomId) {
+        ChatRoom room = chatRoomRepository.findById(roomId).orElse(null);
+        if (room == null) {
+            return null;
+        }
+        return room.getMessages();  // Return the list of messages from the room
     }
 
     @KafkaListener(topics = "chat-topic",groupId = "chat-group")
