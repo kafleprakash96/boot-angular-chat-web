@@ -28,15 +28,29 @@ public class RoomController {
     // Get all rooms for the authenticated user
     @GetMapping
     public ResponseEntity<List<ChatRoom>> getAllRooms(Authentication authentication) {
-        if (authentication == null) {
-            return ResponseEntity.status(401).body(null);  // Unauthorized if no authentication
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body(null);
         }
+
+        System.out.println("User: " + authentication.getName());
+
         try {
-//            userService.getCurrentUser(authentication.getName()); // Ensure user is authenticated
             List<ChatRoom> rooms = chatService.getAllRooms();
             return ResponseEntity.ok(rooms);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);  // Internal Server Error if something goes wrong
+        }
+    }
+
+    @GetMapping("/{roomId}")
+    public ResponseEntity<ChatRoom> getRoomById(@PathVariable Long roomId) {
+        try {
+            ChatRoom room = chatService.getRoomById(roomId);
+            return ResponseEntity.ok(room);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(null); // Room not found
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null); // Internal Server Error
         }
     }
 

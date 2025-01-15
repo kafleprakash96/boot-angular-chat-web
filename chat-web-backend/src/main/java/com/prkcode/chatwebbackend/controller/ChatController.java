@@ -14,20 +14,6 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    // Get messages of a specific room
-    @GetMapping("/room/{roomId}")
-    public ResponseEntity<?> getRoomMessages(@PathVariable Long roomId) {
-        try {
-            ChatRoom room = chatService.getRoom(roomId);
-            if (room == null) {
-                return ResponseEntity.status(404).body("Room not found");
-            }
-            return ResponseEntity.ok(chatService.getRoomMessages(roomId));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error retrieving messages");
-        }
-    }
-
     // Send a message in a room
     @PostMapping("/room/{roomId}/send")
     public ResponseEntity<?> sendMessage(@PathVariable Long roomId,

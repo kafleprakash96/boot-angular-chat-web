@@ -35,4 +35,6 @@ public class ChatMessage {
     @ElementCollection
     @JsonIgnore
     private Set<String> seenby = new HashSet<>();
+
+    private Long replyToId;
 }
