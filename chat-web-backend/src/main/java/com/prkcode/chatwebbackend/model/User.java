@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,12 +29,22 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String username;
 
+    private String firstName;
+    private String lastName;
+
     private String password;
 
     private String email;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     @Override
     public String getUsername() {

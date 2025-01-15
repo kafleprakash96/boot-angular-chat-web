@@ -34,6 +34,9 @@ public class ChatService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private UserService userService;
+
     public ChatService(ChatRoomRepository chatRoomRepository,
                        ChatMessageRepository chatMessageRepository,
                        KafkaTemplate<String, String> kafkaTemplate) {
@@ -44,7 +47,9 @@ public class ChatService {
 
     public ChatRoom createRoom(String name){
         ChatRoom room = new ChatRoom();
+        String createdBy = userService.getCurrentUsername();
         room.setName(name);
+        room.setCreatedBy(createdBy);
         return chatRoomRepository.save(room);
     }
 

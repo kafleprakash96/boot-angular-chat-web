@@ -18,6 +18,7 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String createdBy;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
     @JsonIgnore
