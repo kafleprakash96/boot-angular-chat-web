@@ -1,5 +1,7 @@
 package com.prkcode.chatwebbackend.controller;
 
+import com.prkcode.chatwebbackend.dto.ApiResponse;
+import com.prkcode.chatwebbackend.model.ChatMessage;
 import com.prkcode.chatwebbackend.model.ChatRoom;
 import com.prkcode.chatwebbackend.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +19,11 @@ public class ChatController {
     // Send a message in a room
     @PostMapping("/room/{roomId}/send")
     public ResponseEntity<?> sendMessage(@PathVariable Long roomId,
-                                         @RequestParam String content,
-                                         @RequestParam String sender,
-                                         @RequestParam(required = false) Long replyToId) {
+                                         @RequestBody ChatMessage message) {
         try {
-            chatService.sendMessage(roomId, content, sender,replyToId);
-            return ResponseEntity.ok("Message sent successfully");
+
+            chatService.sendMessage(roomId, message);
+            return ResponseEntity.ok(new ApiResponse("Message sent successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Failed to send message");
         }

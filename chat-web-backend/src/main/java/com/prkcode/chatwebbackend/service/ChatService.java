@@ -71,18 +71,13 @@ public class ChatService {
         return chatMessageRepository.findByChatRoomIdOrderByTimestampDesc(roomId);
     }
 
-    public void sendMessage(Long roomId, String content, String sender,Long replyToId){
+    public void sendMessage(Long roomId, ChatMessage message){
         ChatRoom room = chatRoomRepository.findById(roomId)
-                .orElseThrow(
-                        ()->new RuntimeException("Room not found"));
+                .orElseThrow(() -> new RuntimeException("Room not found"));
 
-        ChatMessage message = new ChatMessage();
-        message.setContent(content);
-        message.setSender(sender);
-        message.setTimestamp(LocalDateTime.now());
         message.setChatRoom(room);
+        message.setTimestamp(LocalDateTime.now());
         message.setConsumed(false);
-        message.setReplyToId(replyToId);
 
         ChatMessage savedMessage = chatMessageRepository.save(message);
 

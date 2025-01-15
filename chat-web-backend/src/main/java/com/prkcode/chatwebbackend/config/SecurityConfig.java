@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(c -> c.disable())
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/ws/**","/ws").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/chat/**","/api/v1/rooms/**").authenticated()
                         .anyRequest().authenticated())
