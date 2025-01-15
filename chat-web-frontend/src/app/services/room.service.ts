@@ -16,15 +16,15 @@ export class RoomService {
   constructor(private http: HttpClient) {}
 
   getAllRooms(): Observable<any> {
-  
-
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getToken()}`);
     return this.http.get(this.baseUrl, { headers });
   }
 
   createRoom(name: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.getToken()}`);
     return this.http.post(`${this.baseUrl}/create`, null, {
-      params: { name }
+      params: { name },
+      headers: headers
     });
   }
 

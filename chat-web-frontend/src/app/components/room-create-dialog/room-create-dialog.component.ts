@@ -10,55 +10,41 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatError, MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { Router } from '@angular/router';
 import { OnInit } from '@angular/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-room-create-dialog',
-  imports: [NgIf,MatProgressSpinnerModule,MatDialogModule,MatError,MatHint,MatLabel,ReactiveFormsModule,MatFormField],
+  imports: [NgIf,
+    MatProgressSpinnerModule,MatDialogModule,MatError,MatInputModule,MatLabel,ReactiveFormsModule,MatFormField,MatButtonModule],
   templateUrl: './room-create-dialog.component.html',
   styleUrl: './room-create-dialog.component.css'
 })
-export class RoomCreateDialogComponent implements OnInit {
-  roomForm !: FormGroup;
+export class RoomCreateDialogComponent{
+  roomForm: FormGroup;
   isLoading = false;
 
   constructor(
     private dialogRef: MatDialogRef<RoomCreateDialogComponent>,
     private fb: FormBuilder,
-    private roomService: RoomService,
-    private snackBar: MatSnackBar,
-    private dialog : MatDialog,
-    private router : Router
+    private roomService: RoomService
   ) {
-  }
-  
-  ngOnInit() {
     this.roomForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(50)]],
-      description: ['', [Validators.maxLength(200)]]
+      roomName: ['', [Validators.required, Validators.minLength(3)]]
     });
   }
 
   onSubmit(): void {
-    if (this.roomForm.valid && !this.isLoading) {
+    if (this.roomForm.valid) {
       this.isLoading = true;
-      const roomData = this.roomForm.value;
+      const roomName = this.roomForm.get('roomName')?.value;
       
-      this.roomService.createRoom(roomData.name).subscribe({
-        next: (createdRoom) => {
-          this.snackBar.open('Room created successfully!', 'Close', {
-            duration: 3000,
-            horizontalPosition: 'end',
-            verticalPosition: 'top'
-          });
-          this.dialogRef.close(createdRoom);
+      this.roomService.createRoom(roomName).subscribe({
+        next: (response) => {
+          this.dialogRef.close(response);
         },
         error: (error) => {
           console.error('Error creating room:', error);
-          this.snackBar.open('Failed to create room. Please try again.', 'Close', {
-            duration: 3000,
-            horizontalPosition: 'end',
-            verticalPosition: 'top'
-          });
           this.isLoading = false;
         }
       });
@@ -68,21 +54,4 @@ export class RoomCreateDialogComponent implements OnInit {
   onCancel(): void {
     this.dialogRef.close();
   }
-
-  getErrorMessage(controlName: string): string {
-    const control = this.roomForm.get(controlName);
-    if (control?.hasError('required')) {
-      return `${controlName.charAt(0).toUpperCase() + controlName.slice(1)} is required`;
-    }
-    if (control?.hasError('minlength')) {
-      return `${controlName.charAt(0).toUpperCase() + controlName.slice(1)} must be at least 3 characters`;
-    }
-    if (control?.hasError('maxlength')) {
-      return `${controlName.charAt(0).toUpperCase() + controlName.slice(1)} cannot exceed ${
-        controlName === 'name' ? '50' : '200'
-      } characters`;
-    }
-    return '';
-  }
-
 }

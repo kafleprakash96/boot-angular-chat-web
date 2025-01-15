@@ -48,41 +48,20 @@ export class DashboardComponent implements OnInit {
   }
 
   loadRooms() {
-    this.roomService.getAllRooms().subscribe({
-      next: (data) => {
-        this.rooms = data;
-      },
-      error: (error) => {
-        console.error('Error loading rooms:', error);
-      }
+    this.roomService.getAllRooms().subscribe(rooms =>{
+      this.rooms = rooms;
     });
   }
 
-  openCreateRoomDialog() {
-    const dialogRef = this.dialog.open(RoomCreateDialogComponent, {
-      width: '250px',
-      data: { username: this.username }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.roomService.createRoom(result.name).subscribe({
-          next: (room) => {
-            this.rooms.push(room);
-          },
-          error: (error) => console.error('Error creating room:', error)
-        });
-      }
-    });
-  }
 
   createRoom(): void {
-    const dialogRef = this.dialog.open(RoomCreateDialogComponent);
+    const dialogRef = this.dialog.open(RoomCreateDialogComponent, {
+      width: '400px'
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.router.navigate(['/dashboard']);
-        console.log('Room created successfully:', result);
+        this.loadRooms();
       }
     });
   }
