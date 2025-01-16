@@ -1,6 +1,7 @@
 package com.prkcode.chatwebbackend.controller;
 
 import com.prkcode.chatwebbackend.dto.MessageReactionRequest;
+import com.prkcode.chatwebbackend.dto.MessageReactionResponseDto;
 import com.prkcode.chatwebbackend.model.MessageReaction;
 import com.prkcode.chatwebbackend.service.MessageReactionService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/messages")
+@RequestMapping("/api/v1/messages")
 @RequiredArgsConstructor
 public class MessageReactionController {
 
@@ -19,7 +20,7 @@ public class MessageReactionController {
 
     @PostMapping("/{messageId}/reactions")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<MessageReaction> addReaction(
+    public ResponseEntity<MessageReactionResponseDto> addReaction(
             @PathVariable Long messageId,
             @RequestBody MessageReactionRequest request,
             @AuthenticationPrincipal UserDetails userDetails
@@ -29,7 +30,14 @@ public class MessageReactionController {
         reaction.setType(request.getType());
 
         MessageReaction savedReaction = messageReactionService.addReaction(messageId, reaction);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedReaction);
+        MessageReactionResponseDto responseDTO = new MessageReactionResponseDto(
+                savedReaction.getId(),
+                savedReaction.getUser(),
+                savedReaction.getType(),
+                savedReaction.getTimestamp(),
+                savedReaction.getMessage().getId()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     @DeleteMapping("/{messageId}/reactions")

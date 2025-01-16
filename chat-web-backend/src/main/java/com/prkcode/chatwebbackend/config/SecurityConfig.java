@@ -35,7 +35,8 @@ public class SecurityConfig {
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/v1/chat/**",
                                          "/api/v1/rooms/**",
-                                          "/api/v1/profile/**").authenticated()
+                                          "/api/v1/profile/**",
+                                "/api/v1/messages/**").authenticated()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

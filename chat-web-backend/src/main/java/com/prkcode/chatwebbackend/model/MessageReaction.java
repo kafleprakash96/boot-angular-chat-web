@@ -1,5 +1,6 @@
 package com.prkcode.chatwebbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +18,8 @@ public class MessageReaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "message_id")
     private ChatMessage message;
 
