@@ -2,6 +2,7 @@ package com.prkcode.chatwebbackend.service;
 
 import com.prkcode.chatwebbackend.model.User;
 import com.prkcode.chatwebbackend.repository.UserRepository;
+import com.prkcode.chatwebbackend.utils.ImageUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,9 @@ public class ProfileService {
     @Value("${app.upload.dir}")
     private String uploadDir;
 
+    @Autowired
+    private ImageUtils imageUtils;
+
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findByUsername(authentication.getName())
@@ -44,7 +48,34 @@ public class ProfileService {
     }
 
     public User updateProfilePicture(MultipartFile file) throws IOException {
-        User currentUser = getCurrentUser();
+        if (!imageUtils.isValidImageFormat(file.getContentType())) {
+            throw new IllegalArgumentException("Invalid image format. Only JPG, JPEG, and PNG are allowed.");
+        }
+
+        // Extract file extension from original filename
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = "";
+        String format = "";
+
+        if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+        }
+
+        // Map file extension to format
+        switch (fileExtension) {
+            case ".jpg":
+            case ".jpeg":
+                format = "jpg";
+                break;
+            case ".png":
+                format = "png";
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported file extension: " + fileExtension);
+        }
+
+        // Compress image to standard size (e.g., 800px width)
+        byte[] compressedImage = imageUtils.compressImage(file.getBytes(), 800, format);
 
         // Create uploads directory if it doesn't exist
         File directory = new File(uploadDir);
@@ -52,15 +83,18 @@ public class ProfileService {
             directory.mkdirs();
         }
 
-        // Generate unique filename
-        String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        // Get current user and generate unique filename
+        User currentUser = getCurrentUser();
+        String username = currentUser.getUsername();
+        String filename = username + "-profile" + fileExtension;
         Path filepath = Paths.get(uploadDir, filename);
 
-        // Save file
-        Files.copy(file.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+        // Save compressed file
+        Files.write(filepath, compressedImage);
 
         // Update user profile picture path
         currentUser.setProfilePicture("/uploads/" + filename);
         return userRepository.save(currentUser);
     }
+
 }
