@@ -4,6 +4,10 @@
         <button mat-raised-button color="primary" (click)="createRoom()">
           Create Room
         </button>
+        <button mat-icon-button matTooltip="Go to Profile" (click)="navigateToProfile()">
+        My Profile
+        <mat-icon>account_circle</mat-icon>
+      </button>
       </div>
       <div class="rooms-grid">
         <app-room-card *ngFor="let room of rooms" [room]="room"></app-room-card>
