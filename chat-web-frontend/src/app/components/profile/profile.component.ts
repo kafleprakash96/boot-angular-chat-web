@@ -59,6 +59,7 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+  
 
   private loadUserProfile(username: string): void {
     this.profileService.getUserProfile(username).subscribe(user => {
