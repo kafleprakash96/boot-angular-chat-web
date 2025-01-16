@@ -2,10 +2,13 @@ package com.prkcode.chatwebbackend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prkcode.chatwebbackend.dto.MessageReactionEvent;
 import com.prkcode.chatwebbackend.model.ChatMessage;
 import com.prkcode.chatwebbackend.model.ChatRoom;
+import com.prkcode.chatwebbackend.model.MessageReaction;
 import com.prkcode.chatwebbackend.repository.ChatMessageRepository;
 import com.prkcode.chatwebbackend.repository.ChatRoomRepository;
+import com.prkcode.chatwebbackend.repository.MessageReactionRepository;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +39,7 @@ public class ChatService {
 
     @Autowired
     private UserService userService;
+
 
     public ChatService(ChatRoomRepository chatRoomRepository,
                        ChatMessageRepository chatMessageRepository,
@@ -124,6 +128,22 @@ public class ChatService {
 
         }catch (JsonProcessingException e){
             log.error("Error while processing message from kafka", e);
+        }
+    }
+
+    @KafkaListener(topics = "chat-reactions", groupId = "chat-group")
+    public void listenToReactions(ConsumerRecord<String, String> record) {
+        try {
+            String eventJson = record.value();
+            MessageReactionEvent event = objectMapper.readValue(eventJson, MessageReactionEvent.class);
+
+            // Broadcast to room-specific WebSocket topic
+            messagingTemplate.convertAndSend(
+                    "/topic/room/" + event.getRoomId() + "/reactions",
+                    event
+            );
+        } catch (JsonProcessingException e) {
+            log.error("Error while processing reaction event from kafka", e);
         }
     }
 
