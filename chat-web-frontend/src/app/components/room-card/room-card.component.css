@@ -2,24 +2,32 @@
     cursor: pointer;
     transition: transform 0.2s ease;
     background-color: var(--white);
-  
-    &:hover {
-      transform: translateY(-5px);
-    }
-  
-    mat-card-title {
-      color: var(--primary-color);
-      font-size: 1.5rem;
-    }
-  
-    mat-card-subtitle {
-      color: var(--text-secondary);
-    }
-  
-    mat-card-actions {
-      padding: 1rem;
-      display: flex;
-      justify-content: flex-end;
-    }
+  }
+
+  .room-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
   
+  mat-card-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+  }
+  
+  mat-card-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+  
+  mat-card-subtitle {
+    margin-top: 4px;
+    color: rgba(0,0,0,0.6);
+  }
+  
+  mat-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px;
+  }

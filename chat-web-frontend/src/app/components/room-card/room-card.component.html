@@ -1,7 +1,12 @@
 <mat-card class="room-card" (click)="navigateToChat()">
   <mat-card-header>
+    <app-room-avatar
+      [roomName]="room.name"
+      size="medium"
+      matCardAvatar>
+    </app-room-avatar>
     <mat-card-title>{{ room.name }}</mat-card-title>
-    <mat-card-subtitle>Created by: {{ room.createdBy }}</mat-card-subtitle>
+    <mat-card-subtitle>Owner: {{ room.createdBy }}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-actions>
     <button mat-button color="primary">Join Chat</button>
