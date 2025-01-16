@@ -60,8 +60,6 @@ export class RoomService {
       { headers }
     );
   }
-  
-  
 
   // Get details of a specific room
   getRoom(roomId: number): Observable<Room> {

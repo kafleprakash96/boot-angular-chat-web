@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Room } from '../../interface/room';
+import { MessageReaction, Room } from '../../interface/room';
 import { Message } from '../../interface/room';
 import { RoomService } from '../../services/room.service';
 import { WebsocketService } from '../../services/websocket.service';
@@ -12,6 +12,7 @@ import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat',
@@ -29,12 +30,15 @@ export class ChatComponent implements OnInit, OnDestroy {
   messageInput = new FormControl('');
   currentUser = localStorage.getItem('username') || '';
   replyToMessage: Message | null = null;
+  reactionTypes: ('love' | 'like' | 'angry')[] = ['love', 'like', 'angry'];
   
-  private subscription?: Subscription;
+  private messageSubscription?: Subscription;
+  private reactionSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private roomService: RoomService,
+    private chatService : ChatService,
     private webSocketService: WebsocketService
   ) {}
 
@@ -45,7 +49,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     
     // Subscribe to room-specific messages
   this.webSocketService.subscribeToRoom(roomId);
-  this.subscription = this.webSocketService.messages$.subscribe(message => {
+  this.messageSubscription = this.webSocketService.messages$.subscribe(message => {
     console.log('Received message in component:', message);
     // Check if message already exists to avoid duplicates
     if (!this.messages.some(m => m.id === message.id)) {
@@ -53,12 +57,28 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.scrollToBottom();
     }
   });
+  this.reactionSubscription = this.webSocketService.reactions$.subscribe(event => {
+    const message = this.messages.find(m => m.id === event.messageId);
+    console.log("In reaction subscription")
+    if (message) {
+      if (event.eventType === 'REACTION_ADDED') {
+        // Remove existing reaction from same user if exists
+        message.reactions = message.reactions.filter(r => r.user !== event.username);
+        // Add new reaction
+        message.reactions.push({
+          type: event.reactionType,
+          user: event.username
+        });
+      } else if (event.eventType === 'REACTION_REMOVED') {
+        message.reactions = message.reactions.filter(r => r.user !== event.username);
+      }
+    }
+  });
 }
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.messageSubscription?.unsubscribe();
+    this.reactionSubscription?.unsubscribe();
     this.webSocketService.disconnect();
   }
 
@@ -98,6 +118,24 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+
+  addReaction(message: Message, reactionType: string) {
+    const reaction = {
+      type: reactionType,
+      user: this.currentUser
+    };
+
+    this.chatService.addReaction(message.id, reaction).subscribe({
+      error: (error) => console.error('Error adding reaction:', error)
+    });
+  }
+
+  removeReaction(messageId: number) {
+    this.chatService.removeReaction(messageId, this.currentUser).subscribe({
+      error: (error) => console.error('Error removing reaction:', error)
+    });
+  }
   
 
   setReplyTo(message: Message) {
@@ -121,5 +159,42 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   findReplyMessage(replyToId: number): Message | undefined {
     return this.messages.find(m => m.id === replyToId);
+  }
+  getReactionEmoji(type: string): string {
+    switch (type) {
+      case 'love': return '❤️';
+      case 'like': return '👍';
+      case 'angry': return '😠';
+      default: return '';
+    }
+  }
+
+  groupReactions(reactions: MessageReaction[]) {
+    const groups = reactions.reduce((acc, reaction) => {
+      const existing = acc.find(g => g.type === reaction.type);
+      if (existing) {
+        existing.users.push(reaction.user);
+        existing.count++;
+      } else {
+        acc.push({ type: reaction.type, users: [reaction.user], count: 1 });
+      }
+      return acc;
+    }, [] as Array<{ type: string, users: string[], count: number }>);
+    
+    return groups;
+  }
+
+  getReactionTooltip(reaction: { type: string, users: string[] }): string {
+    return `${reaction.users.join(', ')} reacted with ${reaction.type}`;
+  }
+
+  showReactions(message: Message) {
+    message.showActions = true;
+    message.showReactions = true;
+  }
+
+  hideReactions(message: Message) {
+    message.showActions = false;
+    message.showReactions = false;
   }
 }

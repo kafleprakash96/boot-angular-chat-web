@@ -6,9 +6,11 @@
       matCardAvatar>
     </app-room-avatar>
     <mat-card-title>{{ room.name }}</mat-card-title>
-    <mat-card-subtitle>Owner: {{ room.createdBy }}</mat-card-subtitle>
+    <mat-card-subtitle>
+      Owner: <a [routerLink]="['/profile', room.createdBy]" (click)="$event.stopPropagation()">{{ room.createdBy }}</a>
+    </mat-card-subtitle>
   </mat-card-header>
   <mat-card-actions>
-    <button mat-button color="primary">Join Chat</button>
+    <button mat-button color="primary">Join</button>
   </mat-card-actions>
 </mat-card>

@@ -1,74 +1,53 @@
-<div class="chat-container">
-  <mat-card class="chat-card">
-    <!-- Header -->
-    <mat-card-header class="chat-header">
-      <div class="room-info">
-        <mat-icon>group</mat-icon>
-        <span class="room-name">{{room?.name}}</span>
-      </div>
-    </mat-card-header>
-
-    <!-- Messages Container -->
-    <mat-card-content class="messages-container" #messageContainer>
-      <div class="messages-list">
-        <div *ngFor="let message of messages" 
-             [ngClass]="{'message-container': true, 'own-message': isOwnMessage(message)}">
-          
-          <!-- Reply Preview -->
-          <div *ngIf="message.replyToId" class="reply-preview">
-            <div class="reply-content">
-              <mat-icon>reply</mat-icon>
-              <span>{{ findReplyMessage(message.replyToId)?.content }}</span>
-            </div>
-          </div>
-
-          <!-- Message Bubble -->
-          <div class="message-bubble">
-            <div class="message-header">
-              <span class="sender-name">{{message.sender}}</span>
-              <span class="message-time">{{message.timestamp | date:'shortTime'}}</span>
-            </div>
-            <div class="message-content">{{message.content}}</div>
-          </div>
-
-          <!-- Message Actions -->
-          <div class="message-actions" *ngIf="!isOwnMessage(message)">
-            <button mat-icon-button (click)="setReplyTo(message)">
-              <mat-icon>reply</mat-icon>
-            </button>
-          </div>
-        </div>
-      </div>
-    </mat-card-content>
-
-    <!-- Reply Preview Bar -->
-    <div *ngIf="replyToMessage" class="reply-bar">
-      <div class="reply-info">
-        <mat-icon>reply</mat-icon>
-        <div class="reply-text">
-          <span class="reply-to">Reply to {{replyToMessage.sender}}</span>
-          <span class="reply-content">{{replyToMessage.content}}</span>
-        </div>
-      </div>
-      <button mat-icon-button (click)="cancelReply()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-
-    <!-- Input Area -->
-    <mat-card-actions class="input-container">
-      <mat-form-field class="message-input">
-        <input matInput
-               [formControl]="messageInput"
-               placeholder="Type a message..."
-               (keyup.enter)="sendMessage()">
-      </mat-form-field>
-      <button mat-icon-button 
-              color="primary" 
-              (click)="sendMessage()"
-              [disabled]="!messageInput.value?.trim()">
-        <mat-icon>send</mat-icon>
-      </button>
-    </mat-card-actions>
+<div class="room-container">
+  <mat-card class="room-header">
+    <h2>{{ room?.name }}</h2>
+    <p class="room-owner">Owner: {{ room?.createdBy }}</p>
   </mat-card>
+
+  <div class="chat-container" #messageContainer>
+    <div
+      *ngFor="let message of messages"
+      class="message-wrapper"
+      [ngClass]="{ 'own-message': isOwnMessage(message), 'incoming-message': !isOwnMessage(message) }"
+      (mouseenter)="showReactions(message)"
+      (mouseleave)="hideReactions(message)"
+    >
+      <div class="message-content">
+        <p>{{ message.content }}</p>
+        <small class="sender-info">{{ message.sender }}</small>
+      </div>
+      <div
+        class="reactions"
+        *ngIf="message.showReactions"
+      >
+        <button
+          mat-mini-fab
+          *ngFor="let reaction of reactionTypes"
+          (click)="addReaction(message, reaction)"
+          aria-label="Add Reaction"
+        >
+          {{ getReactionEmoji(reaction) }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-container">
+    <mat-form-field class="input-field" appearance="outline">
+      <textarea
+        matInput
+        [formControl]="messageInput"
+        placeholder="Type a message..."
+        rows="2"
+      ></textarea>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="sendMessage()"
+      aria-label="Send Message"
+    >
+      Send
+    </button>
+  </div>
 </div>
