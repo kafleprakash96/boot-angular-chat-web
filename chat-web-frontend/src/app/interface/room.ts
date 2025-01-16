@@ -3,6 +3,7 @@ export interface Room {
   name: string;
   createdBy: string;
   messages?: Message[];
+  participants: string[];
 }
 
 export interface Message {

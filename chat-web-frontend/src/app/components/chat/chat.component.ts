@@ -13,12 +13,16 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ChatService } from '../../services/chat.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { AuthService } from '../../services/auth.service';
+
 
 @Component({
   selector: 'app-chat',
   imports: [MatIconModule,ReactiveFormsModule,MatFormFieldModule,MatCardModule,CommonModule,
     MatButtonModule,
-    MatInputModule],
+    MatInputModule,
+    MatTooltipModule,],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
@@ -39,7 +43,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private roomService: RoomService,
     private chatService : ChatService,
-    private webSocketService: WebsocketService
+    private webSocketService: WebsocketService,
+    private authService : AuthService,
   ) {}
 
   ngOnInit() {
@@ -100,7 +105,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.messageInput.value?.trim() && this.room) {
       const message = {
         content: this.messageInput.value,
-        sender: this.currentUser,
+        sender: this.currentUser || this.authService.currentUser,
         replyToId: this.replyToMessage?.id,
         roomId: this.room.id
       };
@@ -154,7 +159,14 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   isOwnMessage(message: Message): boolean {
-    return message.sender === this.currentUser;
+    // Get the current user from localStorage
+    const currentUser = localStorage.getItem('username') || '';
+    console.log('Message alignment check:', {
+      currentUser,
+      messageSender: message.sender,
+      isOwn: message.sender === currentUser
+    });
+    return message.sender === currentUser;
   }
 
   findReplyMessage(replyToId: number): Message | undefined {
@@ -196,5 +208,46 @@ export class ChatComponent implements OnInit, OnDestroy {
   hideReactions(message: Message) {
     message.showActions = false;
     message.showReactions = false;
+  }
+  
+
+  markMessageAsSeen(message: Message) {
+    if (!this.isOwnMessage(message) && !message.seen) {
+      this.chatService.markMessageAsSeen(message.id).subscribe();
+    }
+  }
+
+  // Add helper methods
+  shouldShowSender(message: Message, index: number): boolean {
+    if (index === 0) return true;
+    
+    // Show sender name if either:
+    // 1. Previous message was from a different sender
+    // 2. There's been a significant time gap (e.g., 5 minutes)
+    const prevMessage = this.messages[index - 1];
+    const timeGap = 5 * 60 * 1000; // 5 minutes in milliseconds
+    
+    return prevMessage.sender !== message.sender || 
+           (new Date(message.timestamp).getTime() - new Date(prevMessage.timestamp).getTime() > timeGap);
+  }
+
+  formatSenderName(sender: string): string {
+    // If it's the current user, return 'You'
+    return sender === this.currentUser ? 'You' : sender;
+  }
+
+  getMessageAlignment(message: Message): string {
+    return this.isOwnMessage(message) ? 'own-messages' : 'other-messages';
+  }
+
+  getMessageTime(message: Message): string {
+    return new Date(message.timestamp).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  }
+
+  getUserReaction(message: Message): MessageReaction | undefined {
+    return message.reactions.find(r => r.user === this.currentUser);
   }
 }

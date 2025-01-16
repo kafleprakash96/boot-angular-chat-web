@@ -30,7 +30,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   hidePassword = true;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router,private authService:AuthService) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],  // Username field
       password: ['', Validators.required]   // Password field
@@ -39,20 +39,17 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const loginData = this.loginForm.value;
-
-      this.http.post<any>('http://localhost:8080/api/v1/auth/login', loginData).subscribe(
-        (response:any) => {
-
-          localStorage.setItem('token', response.token);
-          console.log(response.token)
+      const { username, password } = this.loginForm.value;
+  
+      this.authService.login(username, password).subscribe({
+        next: (response) => {
+          // Redirect to dashboard or desired route after successful login
           this.router.navigate(['/dashboard']);
         },
-        (error:any) => {
-          // Handle error (e.g., show an error message)
+        error: (error) => {
           alert('Login failed: ' + error.message);
         }
-      );
+      });
     }
   }
   togglePasswordVisibility(): void{

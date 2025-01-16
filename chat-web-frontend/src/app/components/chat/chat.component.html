@@ -1,53 +1,89 @@
-<div class="room-container">
-  <mat-card class="room-header">
-    <h2>{{ room?.name }}</h2>
-    <p class="room-owner">Owner: {{ room?.createdBy }}</p>
-  </mat-card>
+<div class="chat-container">
+  <mat-card class="chat-card">
+    <mat-card-header>
+      <mat-card-title>{{ room?.name }}</mat-card-title>
+      <mat-card-subtitle>{{ room?.participants?.length || 0 }} participants</mat-card-subtitle>
+    </mat-card-header>
 
-  <div class="chat-container" #messageContainer>
-    <div
-      *ngFor="let message of messages"
-      class="message-wrapper"
-      [ngClass]="{ 'own-message': isOwnMessage(message), 'incoming-message': !isOwnMessage(message) }"
-      (mouseenter)="showReactions(message)"
-      (mouseleave)="hideReactions(message)"
-    >
-      <div class="message-content">
-        <p>{{ message.content }}</p>
-        <small class="sender-info">{{ message.sender }}</small>
+    <mat-card-content>
+      <div #messageContainer class="message-container">
+        <ng-container *ngFor="let message of messages; let i = index">
+          <div class="message-group" 
+               [class.own-messages]="isOwnMessage(message)"
+               [class.other-messages]="!isOwnMessage(message)">
+            
+            <!-- Show username only if it's the first message in the group -->
+            <div class="sender-name" *ngIf="shouldShowSender(message, i)">
+        {{ formatSenderName(message.sender) }}
       </div>
-      <div
-        class="reactions"
-        *ngIf="message.showReactions"
-      >
-        <button
-          mat-mini-fab
-          *ngFor="let reaction of reactionTypes"
-          (click)="addReaction(message, reaction)"
-          aria-label="Add Reaction"
-        >
-          {{ getReactionEmoji(reaction) }}
-        </button>
+
+            <div class="message-wrapper" 
+                 (mouseenter)="showReactions(message)"
+                 (mouseleave)="hideReactions(message)">
+              
+              <!-- Reply preview -->
+              <div class="reply-preview" *ngIf="message.replyToId">
+                <div class="reply-content">
+                  <mat-icon class="reply-icon">reply</mat-icon>
+                  <span>{{ findReplyMessage(message.replyToId)?.content }}</span>
+                </div>
+              </div>
+
+              <!-- Message content -->
+              <div class="message-bubble">
+                {{ message.content }}
+                
+                <!-- Message timestamp -->
+                <span class="message-time">{{ getMessageTime(message) }}</span>
+
+                <!-- Reaction buttons overlay -->
+                <div class="reaction-overlay" *ngIf="message.showReactions">
+                  <button mat-icon-button *ngFor="let type of reactionTypes"
+                          class="reaction-button"
+                          (click)="addReaction(message, type)">
+                    {{ getReactionEmoji(type) }}
+                  </button>
+                </div>
+
+                <!-- Existing reactions -->
+                <div class="reactions-container" *ngIf="message.reactions?.length">
+                  <div *ngFor="let reaction of groupReactions(message.reactions)"
+                       class="reaction-badge"
+                       [attr.data-tooltip]="getReactionTooltip(reaction)"
+                       (click)="removeReaction(message.id)">
+                    {{ getReactionEmoji(reaction.type) }}
+                    <span class="reaction-count">{{ reaction.count }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </div>
+    </mat-card-content>
+
+    <!-- Reply preview -->
+    <div class="reply-bar" *ngIf="replyToMessage">
+      <div class="reply-preview">
+        <mat-icon>reply</mat-icon>
+        <span>{{ replyToMessage.content }}</span>
+      </div>
+      <button mat-icon-button (click)="cancelReply()">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
-  </div>
 
-  <div class="input-container">
-    <mat-form-field class="input-field" appearance="outline">
-      <textarea
-        matInput
-        [formControl]="messageInput"
-        placeholder="Type a message..."
-        rows="2"
-      ></textarea>
-    </mat-form-field>
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="sendMessage()"
-      aria-label="Send Message"
-    >
-      Send
-    </button>
-  </div>
+    <!-- Message input -->
+    <mat-card-actions class="input-container">
+      <mat-form-field appearance="outline" class="message-input">
+        <input matInput
+               [formControl]="messageInput"
+               placeholder="Type a message..."
+               (keyup.enter)="sendMessage()">
+      </mat-form-field>
+      <button mat-icon-button (click)="sendMessage()" [disabled]="!messageInput.value">
+        <mat-icon>send</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
 </div>

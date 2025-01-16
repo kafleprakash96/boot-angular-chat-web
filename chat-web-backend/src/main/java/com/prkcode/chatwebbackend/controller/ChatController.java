@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
@@ -19,10 +21,12 @@ public class ChatController {
     // Send a message in a room
     @PostMapping("/room/{roomId}/send")
     public ResponseEntity<?> sendMessage(@PathVariable Long roomId,
-                                         @RequestBody ChatMessage message) {
+                                         @RequestBody ChatMessage message,
+                                         Principal principal) {
         try {
-
-            chatService.sendMessage(roomId, message);
+            String senderName = principal.getName();
+            System.out.println("Sender name: "+ senderName);
+            chatService.sendMessage(roomId, message,senderName);
             return ResponseEntity.ok(new ApiResponse("Message sent successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Failed to send message");

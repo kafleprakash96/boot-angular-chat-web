@@ -9,7 +9,7 @@ import {User} from '../interface/user';
 })
 export class AuthService {
 
-  private baseUrl = 'http://localhost:8081/api/v1/auth';
+  private baseUrl = 'http://localhost:8080/api/v1/auth';
   private currentUserSubject = new BehaviorSubject<AuthResponse | null>(null);
 
   constructor(private http: HttpClient) {
@@ -23,15 +23,22 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  login(username: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, { username, password })
-      .pipe(
-        tap(response => {
-          localStorage.setItem('currentUser', JSON.stringify(response));
-          this.currentUserSubject.next(response);
-        })
-      );
+  login(username: string, password: string): Observable<any> {
+    return this.http.post<{ token: string; username: string }>(
+      `${this.baseUrl}/login`, 
+      { username, password }
+    ).pipe(
+      tap(response => {
+        // Store token and username in localStorage
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('username', response.username);
+        
+        // Notify any subscribers about the current user (if needed)
+        this.currentUserSubject.next(response);
+      })
+    );
   }
+  
 
   register(user: User): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, user);

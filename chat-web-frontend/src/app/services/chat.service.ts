@@ -24,11 +24,9 @@ export class ChatService {
     return this.http.post<Message>(`${this.chatApiUrl}/room/${roomId}/send`, message);
   }
 
-  //Todo
 
-  markAsSeen(messageId: number, username: string): Observable<any> {
-    const params = { username };
-    return this.http.post(`${this.chatApiUrl}/message/${messageId}/seen`, null, { params });
+  markMessageAsSeen(messageId: number) {
+    return this.http.post(`${this.chatApiUrl}/messages/${messageId}/seen`, {});
   }
 
   addReaction(messageId: number, reaction: {
