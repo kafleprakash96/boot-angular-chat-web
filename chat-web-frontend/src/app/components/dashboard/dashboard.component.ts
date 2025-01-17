@@ -1,4 +1,4 @@
-import { Component,OnInit } from '@angular/core';
+import { Component,OnInit, ViewChild } from '@angular/core';
 
 import {Room} from '../../interface/room';
 import {RoomService} from '../../services/room.service';
@@ -15,6 +15,9 @@ import { MatToolbar, MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { SideMenuComponent } from '../side-menu/side-menu.component';
+import { HeaderComponent } from '../header/header.component';
+import { MatSidenav } from '@angular/material/sidenav';
 
 
 @Component({
@@ -22,11 +25,14 @@ import { MatMenuModule } from '@angular/material/menu';
   imports: [RoomCardComponent,
     FormsModule,
     NgFor,
-    MatCardModule,MatToolbarModule,MatButtonModule,MatIconModule,MatMenuModule],
+    MatCardModule,
+    MatSidenav,MatToolbarModule,MatButtonModule,MatIconModule,MatMenuModule,SideMenuComponent,HeaderComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+
+  @ViewChild('sidenav') sidenav!: MatSidenav;
 
   rooms: any[] = [];
   newRoomName: string = '';
@@ -75,6 +81,11 @@ export class DashboardComponent implements OnInit {
 
   navigateToProfile() {
     this.router.navigate(['/profile']);
+  }
+
+  onToggleSidenav(): void {
+    console.log("side menu clicked")
+    this.sidenav.toggle();
   }
 
 }

@@ -5,6 +5,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} from '@angular/material/card';
 import {MatGridList, MatGridTile} from '@angular/material/grid-list';
 import {MatButton} from '@angular/material/button';
+import { HeaderComponent } from '../header/header.component';
 
 ;
 
@@ -17,7 +18,7 @@ import {MatButton} from '@angular/material/button';
     MatGridTile,
     MatCard,
     MatIcon,
-  MatButton],
+  MatButton,HeaderComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })

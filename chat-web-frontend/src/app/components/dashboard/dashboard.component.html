@@ -1,18 +1,21 @@
-<div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1>Chat Rooms</h1>
-    <div class="dashboard-actions">
-      <button mat-raised-button color="primary" (click)="createRoom()">
-        <mat-icon>add</mat-icon>
-        Create Room
-      </button>
-      <button mat-raised-button (click)="navigateToProfile()">
-        <mat-icon>account_circle</mat-icon>
-        My Profile
-      </button>
+<app-header [isLoggedIn]="true" (toggleSidenav)="onToggleSidenav()"></app-header>
+<app-side-menu>
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1>Chat Rooms</h1>
+      <div class="dashboard-actions">
+        <button mat-raised-button color="primary" (click)="createRoom()">
+          <mat-icon>add</mat-icon>
+          Create Room
+        </button>
+        <button mat-raised-button (click)="navigateToProfile()">
+          <mat-icon>account_circle</mat-icon>
+          My Profile
+        </button>
+      </div>
+    </div>
+    <div class="rooms-grid">
+      <app-room-card *ngFor="let room of rooms" [room]="room"></app-room-card>
     </div>
   </div>
-  <div class="rooms-grid">
-    <app-room-card *ngFor="let room of rooms" [room]="room"></app-room-card>
-  </div>
-</div>
+</app-side-menu>
