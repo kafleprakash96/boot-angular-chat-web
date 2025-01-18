@@ -1,20 +1,42 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.sidenav-container {
+  flex: 1;
+  height: calc(100vh - 64px);
+}
+
+.sidenav {
+  width: 240px;
+  background-color: white;
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
 .dashboard-container {
-  padding: 20px;
+  padding: 24px;
   max-width: 1200px;
   margin: 0 auto;
+  height: 100%;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
 }
 
 .dashboard-header {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   gap: 20px;
 }
 
 .dashboard-header h1 {
   margin: 0;
   flex-grow: 1;
+  color: #333;
+  font-size: 2rem;
 }
 
 .dashboard-actions {
@@ -26,31 +48,17 @@
 .rooms-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  gap: 24px;
 }
 
-.sidenav-container {
-  height: 100vh;
-  width: 100%;
-}
-.sidenav {
-  width: 250px;
-  box-shadow: 3px 0 6px rgba(0,0,0,.24);
-}
-.content {
-  padding: 20px;
-  height: calc(100vh - 64px);
-  overflow-y: auto;
+.sidemenu-list {
+  padding: 8px;
 }
 
-@media (max-width: 600px) {
-  .dashboard-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .dashboard-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
+.menu-item {
+  margin: 4px 0;
+  border-radius: 8px;
+  height: 48px;
+  color: rgba(0, 0, 0, 0.87);
+  transition: all 0.
 }

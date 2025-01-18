@@ -28,3 +28,13 @@
 mat-icon {
   vertical-align: middle;
 }
+
+.header-icon {
+  color: rgba(255, 255, 255, 0.87); 
+  transition: color 0.3s ease, transform 0.3s ease; 
+}
+
+.header-icon:hover {
+  color: #ffffff; 
+  transform: scale(1.1); 
+}

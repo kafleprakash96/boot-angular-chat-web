@@ -8,11 +8,11 @@ import { AuthGuard } from './guards/auth.guard';
 import { ProfileComponent } from './components/profile/profile.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent},
+  { path: 'dashboard', component: DashboardComponent,canActivate:[AuthGuard]},
   { path: 'register', component: RegisterComponent},
   { path: 'chat/:id', component: ChatComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: '', redirectTo: '', pathMatch: 'full' }
+  { path: 'profile', component: ProfileComponent,canActivate:[AuthGuard] },
+  { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];

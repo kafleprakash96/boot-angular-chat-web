@@ -1,19 +1,44 @@
-.sidemenu-list {
-  padding-top: 8px;
-}
 .menu-item {
+  margin: 4px 0;
+  border-radius: 8px;
   height: 48px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 0 16px;
+  color: rgba(0, 0, 0, 0.87);
+  transition: all 0.3s ease;
 }
-.active-link {
-  background-color: rgba(0, 0, 0, 0.04);
+
+.menu-item:hover {
+  background-color: rgba(123, 31, 162, 0.04);
 }
-mat-icon {
+
+.menu-item:hover mat-icon {
+  color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.menu-item:hover span {
+  color: var(--primary-light);
+}
+
+.menu-item mat-icon {
+  color: rgba(0, 0, 0, 0.54);
+  transition: all 0.3s ease;
   margin-right: 16px;
 }
-mat-divider {
-  margin: 8px 0;
+
+.menu-item span {
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.active-link {
+  background-color: rgba(123, 31, 162, 0.12);
+}
+
+.active-link mat-icon {
+  color: var(--primary-color);
+}
+
+.active-link span {
+  color: var(--primary-light);
+  font-weight: 600;
 }
