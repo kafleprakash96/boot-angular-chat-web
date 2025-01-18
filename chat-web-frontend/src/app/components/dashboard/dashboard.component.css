@@ -29,6 +29,20 @@
   gap: 20px;
 }
 
+.sidenav-container {
+  height: 100vh;
+  width: 100%;
+}
+.sidenav {
+  width: 250px;
+  box-shadow: 3px 0 6px rgba(0,0,0,.24);
+}
+.content {
+  padding: 20px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+}
+
 @media (max-width: 600px) {
   .dashboard-header {
     flex-direction: column;

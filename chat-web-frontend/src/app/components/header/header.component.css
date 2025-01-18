@@ -1,14 +1,30 @@
-.toolbar {
-  position: fixed;
-  top: 0;
-  z-index: 1000;
+.header-toolbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
 }
-.toolbar-spacer {
-  flex: 1 1 auto;
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.app-title {
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.menu-button {
+  margin-right: 8px;
+}
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.title {
+  font-size: 20px;
   margin-left: 8px;
 }
-button {
-  margin-left: 8px;
+mat-icon {
+  vertical-align: middle;
 }

@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
 
 @Component({
@@ -25,9 +26,18 @@ import { HeaderComponent } from '../header/header.component';
   styleUrl: './side-menu.component.css'
 })
 export class SideMenuComponent {
+  
+  constructor(private router: Router){
+
+  }
 
   logout(){
     console.log("logout")
+  }
+
+  navigate(){
+    // this.router.navigate([path]);
+    console.log("navigate")
   }
 
 }

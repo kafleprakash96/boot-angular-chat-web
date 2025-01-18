@@ -1,6 +1,11 @@
-<app-header [isLoggedIn]="true" (toggleSidenav)="onToggleSidenav()"></app-header>
-<app-side-menu>
-  <div class="dashboard-container">
+<app-header [isLoggedIn]="true" (toggleSidenav)="sidenav.toggle()"></app-header>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="over" class="sidenav">
+    <app-side-menu>
+  </app-side-menu>
+  </mat-sidenav>
+    <div class="dashboard-container">
     <div class="dashboard-header">
       <h1>Chat Rooms</h1>
       <div class="dashboard-actions">
@@ -18,4 +23,5 @@
       <app-room-card *ngFor="let room of rooms" [room]="room"></app-room-card>
     </div>
   </div>
-</app-side-menu>
+</mat-sidenav-container>
+

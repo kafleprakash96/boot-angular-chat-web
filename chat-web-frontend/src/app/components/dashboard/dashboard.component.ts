@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { HeaderComponent } from '../header/header.component';
-import { MatSidenav } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 
 
 @Component({
@@ -26,7 +26,7 @@ import { MatSidenav } from '@angular/material/sidenav';
     FormsModule,
     NgFor,
     MatCardModule,
-    MatSidenav,MatToolbarModule,MatButtonModule,MatIconModule,MatMenuModule,SideMenuComponent,HeaderComponent],
+    MatSidenavModule,MatToolbarModule,MatButtonModule,MatIconModule,MatMenuModule,SideMenuComponent,HeaderComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
