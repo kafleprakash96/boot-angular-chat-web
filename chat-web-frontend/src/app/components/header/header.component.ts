@@ -1,5 +1,5 @@
 import { Component, OnInit, Input,Output,EventEmitter, ViewChild, TemplateRef} from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -10,7 +10,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 @Component({
   selector: 'app-header',
   imports: [HeaderComponent,
-    MatIconModule,MatToolbar,CommonModule,MatButtonModule,MatDialogModule],
+    MatIconModule,MatToolbar,CommonModule,MatButtonModule,MatDialogModule,RouterLink],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
