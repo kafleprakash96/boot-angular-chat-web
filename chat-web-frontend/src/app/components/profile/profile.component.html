@@ -1,58 +1,184 @@
-<div class="profile-container">
-  <mat-card class="profile-card">
-    <mat-card-header>
-      <div class="profile-header">
-        <div class="profile-picture-container">
-          <img [src]="user?.profilePicture || 'assets/default-avatar.png'" 
-               alt="Profile picture"
-               class="profile-picture">
-          <button *ngIf="isCurrentUser" mat-mini-fab color="primary" class="change-picture-button" (click)="fileInput.click()" matTooltip="Change profile picture">
-            <mat-icon>photo_camera</mat-icon>
-          </button>
-          <input #fileInput type="file" hidden accept="image/jpeg,image/png,image/jpg" (change)="onFileSelected($event)">
-        </div>
-        <div class="profile-info">
-          <ng-container *ngIf="!isEditing">
-            <h2>{{user?.firstName}} {{user?.lastName}}</h2>
-            <p>{{user?.email}}</p>
-            <p *ngIf="isCurrentUser">{{user?.bio || 'No bio available'}}</p>
-            <button *ngIf="isCurrentUser" mat-icon-button color="primary" (click)="onEditProfile()">
-              <mat-icon>edit</mat-icon>
-            </button>
-          </ng-container>
-        </div>
+<div class="profile-page">
+  <!-- Cover Photo Section -->
+  <div class="cover-photo-container">
+    <img
+      [src]="getImageUrl(user?.coverPictureUrl)"
+      alt="Cover photo"
+      class="cover-photo"
+    />
+    <button
+      *ngIf="isCurrentUser"
+      class="change-cover-button"
+      mat-mini-fab
+      (click)="coverPhotoInput.click()"
+      matTooltip="Change cover photo"
+    >
+      <mat-icon>photo_camera</mat-icon>
+    </button>
+    <input
+      #coverPhotoInput
+      type="file"
+      hidden
+      accept="image/jpeg,image/png,image/jpg"
+      (change)="onCoverPhotoSelected($event)"
+    />
+  </div>
+
+  <!-- Profile Info Section -->
+  <div class="profile-content">
+    <div class="profile-header">
+      <div class="profile-picture-wrapper">
+        <img
+          [src]="getImageUrl(user?.profilePictureUrl)"
+          alt="Profile picture"
+          class="profile-picture"
+        />
+        <button
+          *ngIf="isCurrentUser"
+          class="change-profile-picture"
+          mat-mini-fab
+          (click)="profilePhotoInput.click()"
+        >
+          <mat-icon>photo_camera</mat-icon>
+        </button>
+        <input
+          #profilePhotoInput
+          type="file"
+          hidden
+          accept="image/jpeg,image/png,image/jpg"
+          (change)="onProfilePhotoSelected($event)"
+        />
       </div>
-    </mat-card-header>
 
-    <mat-card-content>
-      <form *ngIf="isEditing" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
-        <mat-form-field appearance="outline">
-          <mat-label>First Name</mat-label>
-          <input matInput formControlName="firstName">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Last Name</mat-label>
-          <input matInput formControlName="lastName">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput formControlName="email" type="email">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Bio</mat-label>
-          <textarea matInput formControlName="bio"></textarea>
-        </mat-form-field>
-
-        <div class="form-actions">
-          <button mat-button (click)="isEditing = false">Cancel</button>
-          <button mat-raised-button color="primary" type="submit" [disabled]="!profileForm.valid">
-            Save
-          </button>
+      <div class="profile-info">
+        <div class="profile-header-content">
+          <h1>{{ user?.firstName }} {{ user?.lastName }}</h1>
+          <p class="occupation">
+            {{ user?.occupation }} at {{ user?.company }}
+          </p>
+          <p class="location">
+            <mat-icon>location_on</mat-icon>
+            {{ user?.location }}
+          </p>
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+        <button
+          *ngIf="isCurrentUser && !isEditing"
+          mat-raised-button
+          color="primary"
+          (click)="onEditProfile()"
+        >
+          Edit Profile
+        </button>
+      </div>
+    </div>
+
+    <!-- Profile Details Section -->
+    <mat-card class="profile-details">
+      <mat-tab-group>
+        <mat-tab label="About">
+          <div class="tab-content" *ngIf="!isEditing">
+            <h3>Bio</h3>
+            <p>{{ user?.bio || 'No bio available' }}</p>
+
+            <h3>About</h3>
+            <p>{{ user?.about || 'No information available' }}</p>
+
+            <div class="social-links">
+              <a
+                [href]="user?.githubUrl"
+                *ngIf="user?.githubUrl"
+                target="_blank"
+              >
+                <mat-icon>code</mat-icon>
+                GitHub
+              </a>
+              <a
+                [href]="user?.linkedinUrl"
+                *ngIf="user?.linkedinUrl"
+                target="_blank"
+              >
+                <mat-icon>business</mat-icon>
+                LinkedIn
+              </a>
+              <a
+                [href]="user?.twitterUrl"
+                *ngIf="user?.twitterUrl"
+                target="_blank"
+              >
+                <mat-icon>flutter_dash</mat-icon>
+                Twitter
+              </a>
+            </div>
+          </div>
+
+          <!-- Edit Form -->
+          <form
+            *ngIf="isEditing"
+            [formGroup]="profileForm"
+            (ngSubmit)="onSaveProfile()"
+            class="edit-form"
+          >
+            <!-- ... existing form fields ... -->
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Location</mat-label>
+                <input matInput formControlName="location" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Website</mat-label>
+                <input matInput formControlName="website" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Company</mat-label>
+                <input matInput formControlName="company" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Occupation</mat-label>
+                <input matInput formControlName="occupation" />
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline">
+              <mat-label>About</mat-label>
+              <textarea matInput formControlName="about" rows="4"></textarea>
+            </mat-form-field>
+
+            <div class="social-links-form">
+              <mat-form-field appearance="outline">
+                <mat-label>GitHub URL</mat-label>
+                <input matInput formControlName="githubUrl" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>LinkedIn URL</mat-label>
+                <input matInput formControlName="linkedinUrl" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Twitter URL</mat-label>
+                <input matInput formControlName="twitterUrl" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+              <button mat-button (click)="isEditing = false">Cancel</button>
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="!profileForm.valid"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
 </div>

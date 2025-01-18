@@ -42,7 +42,19 @@ export class RegisterComponent implements OnInit {
       username: ['',],
       email: ['', ],  
       password: ['',],
-      bio: ['']   
+      bio: [''],
+      lasUpdated : [''],
+      location:[''],
+      website:[''],
+      company:[''],
+      occupation:[''],
+      about:[''],
+      githubUrl:[''],
+      linkedinUrl:[''],
+      twitterUrl:[''],
+      visibility:[''],
+      emailVerified:[''],
+      phoneVerified:['']
     });
     
   }
@@ -67,7 +79,21 @@ export class RegisterComponent implements OnInit {
       username: this.registerForm.get('username')?.value,
       email: this.registerForm.get('email')?.value,
       password: this.registerForm.get('password')?.value,
-      bio: this.registerForm.get('bio')?.value
+      bio: this.registerForm.get('bio')?.value,
+      lastUpdated : this.registerForm.get('lastUpdated')?.value,
+      location : this.registerForm.get('location')?.value,
+      website : this.registerForm.get('website')?.value,
+      company : this.registerForm.get('company')?.value,
+      occupation : this.registerForm.get('occupation')?.value,
+      about : this.registerForm.get('about')?.value,
+      githubUrl : this.registerForm.get('githubUrl')?.value,
+      linkedinUrl : this.registerForm.get('linkedinUrl')?.value,
+      twitterUrl : this.registerForm.get('twitterUrl')?.value,
+      visibility : this.registerForm.get('visibility')?.value,
+      emailVerified : this.registerForm.get('emailVerified')?.value,
+      phoneVerified : this.registerForm.get('phoneVerified')?.value
+
+
     };
     console.log(user);
 

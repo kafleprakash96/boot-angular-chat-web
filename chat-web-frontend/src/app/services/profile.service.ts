@@ -28,8 +28,8 @@ export class ProfileService {
     
     this.http.get<User>(`${this.profileApiUrl}/current`, options).subscribe({
       next: (user) => {
-        if (user.profilePicture) {
-          user.profilePicture = this.getProfilePictureUrl(user.profilePicture);
+        if (user.profilePictureUrl) {
+          user.profilePictureUrl = this.getProfilePictureUrl(user.profilePictureUrl);
         }
         this.currentUserSubject.next(user);
       },
@@ -50,8 +50,8 @@ export class ProfileService {
     // Public endpoint - no authentication required
     return this.http.get<User>(`${this.profileApiUrl}/${username}`).pipe(
       tap(user => {
-        if (user.profilePicture) {
-          user.profilePicture = this.getProfilePictureUrl(user.profilePicture);
+        if (user.profilePictureUrl) {
+          user.profilePictureUrl = this.getProfilePictureUrl(user.profilePictureUrl);
         }
       })
     );
@@ -63,8 +63,8 @@ export class ProfileService {
     return this.http.put<User>(`${this.profileApiUrl}/profile`, userData, options)
       .pipe(
         tap(user => {
-          if (user.profilePicture) {
-            user.profilePicture = this.getProfilePictureUrl(user.profilePicture);
+          if (user.profilePictureUrl) {
+            user.profilePictureUrl = this.getProfilePictureUrl(user.profilePictureUrl);
           }
           this.currentUserSubject.next(user);
         })
@@ -83,8 +83,8 @@ export class ProfileService {
     return this.http.put<User>(`${this.profileApiUrl}/profile-picture`, formData, options)
       .pipe(
         tap(user => {
-          if (user.profilePicture) {
-            user.profilePicture = this.getProfilePictureUrl(user.profilePicture);
+          if (user.profilePictureUrl) {
+            user.profilePictureUrl = this.getProfilePictureUrl(user.profilePictureUrl);
           }
           this.currentUserSubject.next(user);
         })
@@ -94,4 +94,21 @@ export class ProfileService {
   private getToken(): string {
     return localStorage.getItem('token') || '';
   }
+
+  updateCoverPicture(file: File): Observable<User> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<User>(`${this.profileApiUrl}/update/cover-picture`, formData)
+      .pipe(
+        tap(user => {
+          // Update the current user in the behavior subject if it's the logged-in user
+          if (this.currentUserSubject.value?.id === user.id) {
+            this.currentUserSubject.next(user);
+          }
+        })
+      );
+  }
+
+
 }
