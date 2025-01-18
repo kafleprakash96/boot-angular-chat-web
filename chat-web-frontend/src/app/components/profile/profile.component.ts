@@ -45,7 +45,8 @@ export class ProfileComponent implements OnInit {
     this.profileForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
+      bio: ['', Validators.maxLength(500)]  
     });
   }
 
@@ -59,7 +60,6 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
-  
 
   private loadUserProfile(username: string): void {
     this.profileService.getUserProfile(username).subscribe(user => {
@@ -78,7 +78,8 @@ export class ProfileComponent implements OnInit {
         this.profileForm.patchValue({
           firstName: user.firstName,
           lastName: user.lastName,
-          email: user.email
+          email: user.email,
+          bio: user.bio || ''  // Add bio here as well
         });
       }
     });
@@ -131,3 +132,5 @@ export class ProfileComponent implements OnInit {
     });
   }
 }
+
+

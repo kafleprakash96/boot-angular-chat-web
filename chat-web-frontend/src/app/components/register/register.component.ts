@@ -26,20 +26,27 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
 
-  registerForm: FormGroup;
+  registerForm!: FormGroup;
   hidePassword = true;
 
   constructor(private fb: FormBuilder, private http: HttpClient, private router: Router,private authService: AuthService) {
-    this.registerForm = this.fb.group({
-      firstname: ['', Validators.required],
-      lastname: ['', Validators.required],
-      username: ['',],
-      email: ['', Validators.required],  
-      password: ['', Validators.required]   
-    });
+    
   }
+
+  ngOnInit(): void {
+    this.registerForm = this.fb.group({
+      firstname: ['', ],
+      lastname: ['', ],
+      username: ['',],
+      email: ['', ],  
+      password: ['',],
+      bio: ['']   
+    });
+    
+  }
+  
 
   passwordMatchValidator(group: FormGroup): null | object {
     const password = group.get('password')?.value;
@@ -49,6 +56,7 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
+    console.log(this.registerForm.get('firstName')?.errors);
     if (this.registerForm.invalid) {
       return; // If the form is invalid, do nothing
     }
@@ -58,19 +66,22 @@ export class RegisterComponent {
       lastName: this.registerForm.get('lastName')?.value,
       username: this.registerForm.get('username')?.value,
       email: this.registerForm.get('email')?.value,
-      password: this.registerForm.get('password')?.value
+      password: this.registerForm.get('password')?.value,
+      bio: this.registerForm.get('bio')?.value
     };
+    console.log(user);
 
     // Call the registration method in your AuthService
-    this.authService.register(user).subscribe(
-      (response) => {
+    this.authService.register(user).subscribe({
+      next : (response) => {
         console.log('Registration successful', response);
         this.router.navigate(['/login']); // Navigate to login page after successful registration
       },
-      (error) => {
+       error: (error) => {
         console.error('Registration error', error);
         // Handle errors here (e.g., show a message to the user)
       }
+    }
     );
   }
   togglePasswordVisibility(): void{

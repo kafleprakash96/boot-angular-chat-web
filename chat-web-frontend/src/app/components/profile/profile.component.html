@@ -1,4 +1,3 @@
-<!-- profile.component.html -->
 <div class="profile-container">
   <mat-card class="profile-card">
     <mat-card-header>
@@ -7,27 +6,17 @@
           <img [src]="user?.profilePicture || 'assets/default-avatar.png'" 
                alt="Profile picture"
                class="profile-picture">
-          <button *ngIf="isCurrentUser"
-                  mat-mini-fab
-                  color="primary"
-                  class="change-picture-button"
-                  (click)="fileInput.click()">
+          <button *ngIf="isCurrentUser" mat-mini-fab color="primary" class="change-picture-button" (click)="fileInput.click()" matTooltip="Change profile picture">
             <mat-icon>photo_camera</mat-icon>
           </button>
-          <input #fileInput
-                 type="file"
-                 hidden
-                 accept="image/jpeg,image/png,image/jpg"
-                 (change)="onFileSelected($event)">
+          <input #fileInput type="file" hidden accept="image/jpeg,image/png,image/jpg" (change)="onFileSelected($event)">
         </div>
         <div class="profile-info">
           <ng-container *ngIf="!isEditing">
             <h2>{{user?.firstName}} {{user?.lastName}}</h2>
             <p>{{user?.email}}</p>
-            <button *ngIf="isCurrentUser"
-                    mat-icon-button
-                    color="primary"
-                    (click)="onEditProfile()">
+            <p *ngIf="isCurrentUser">{{user?.bio || 'No bio available'}}</p>
+            <button *ngIf="isCurrentUser" mat-icon-button color="primary" (click)="onEditProfile()">
               <mat-icon>edit</mat-icon>
             </button>
           </ng-container>
@@ -50,6 +39,11 @@
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
           <input matInput formControlName="email" type="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Bio</mat-label>
+          <textarea matInput formControlName="bio"></textarea>
         </mat-form-field>
 
         <div class="form-actions">
