@@ -1,6 +1,9 @@
 package com.prkcode.chatwebbackend.config;
 
+import com.prkcode.chatwebbackend.dto.ProfileDto;
+import com.prkcode.chatwebbackend.model.Profile;
 import com.prkcode.chatwebbackend.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +17,7 @@ public class AppConfig {
 
     @Autowired
     private UserRepository repository;
+
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -41,4 +45,24 @@ public class AppConfig {
     public CorsRegistry registry(){
         return new CorsRegistry();
     }
+
+    @Bean
+    public ModelMapper modelMapper(){
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.createTypeMap(Profile.class, ProfileDto.class).addMappings(
+                mapper -> {
+                    mapper.map(src -> src.getUser().getUsername(),ProfileDto::setUsername);
+                    mapper.map(src -> src.getUser().getFirstName(),ProfileDto::setFirstName);
+                    mapper.map(src -> src.getUser().getLastName(),ProfileDto::setLastName);
+                }
+        );
+
+        modelMapper.createTypeMap(ProfileDto.class, Profile.class).addMappings(
+                mapper -> {
+                    mapper.skip(Profile::setUser);
+                }
+        );
+        return modelMapper;
+    }
+
 }

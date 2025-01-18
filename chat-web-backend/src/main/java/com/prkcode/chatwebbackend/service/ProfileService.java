@@ -1,9 +1,13 @@
 package com.prkcode.chatwebbackend.service;
 
+import com.prkcode.chatwebbackend.dto.ProfileDto;
+import com.prkcode.chatwebbackend.model.Profile;
+import com.prkcode.chatwebbackend.model.ProfileRepository;
 import com.prkcode.chatwebbackend.model.User;
 import com.prkcode.chatwebbackend.repository.UserRepository;
 import com.prkcode.chatwebbackend.utils.ImageUtils;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -26,6 +30,12 @@ public class ProfileService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProfileRepository profileRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -95,6 +105,35 @@ public class ProfileService {
         // Update user profile picture path
         currentUser.setProfilePicture("/uploads/" + filename);
         return userRepository.save(currentUser);
+    }
+
+    @Transactional
+    public ProfileDto getUserProfile(String username){
+        Profile profile = profileRepository.findByUserUsername(username)
+                .orElseThrow(()-> new RuntimeException("Profile not found for username " + username));
+        return modelMapper.map(profile, ProfileDto.class);
+    }
+
+    @Transactional
+    public ProfileDto createUserProfile(String username,ProfileDto profileDto){
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new RuntimeException("User not found for username " + username));
+
+        Profile profile = modelMapper.map(profileDto,Profile.class);
+        profile.setUser(user);
+
+        Profile savedProfile = profileRepository.save(profile);
+        return modelMapper.map(savedProfile,ProfileDto.class);
+    }
+
+    @Transactional
+    public ProfileDto updateProfile(String username, ProfileDto profileDto){
+        Profile existingProfile = profileRepository.findByUserUsername(username)
+                .orElseThrow(()-> new RuntimeException("Profile not found for username " + username));
+        modelMapper.map(profileDto, existingProfile);
+        Profile updatedProfile = profileRepository.save(existingProfile);
+
+        return modelMapper.map(updatedProfile,ProfileDto.class);
     }
 
 }
