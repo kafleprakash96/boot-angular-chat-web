@@ -17,10 +17,23 @@
           </button>
         </ng-container>
         <ng-container *ngIf="isLoggedIn">
-          <button mat-button (click)="logout()" class="nav-button">
+          <button mat-button (click)="openLogoutDialog()" class="nav-button">
             <mat-icon>exit_to_app</mat-icon>
             <span>Logout</span>
           </button>
         </ng-container>
       </div>
     </mat-toolbar>
+
+    <ng-template #logoutDialog>
+      <h2 mat-dialog-title>Confirm Logout</h2>
+      <mat-dialog-content>
+        Are you sure you want to log out?
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-raised-button color="primary" (click)="confirmLogout()">
+          Logout
+        </button>
+      </mat-dialog-actions>
+    </ng-template>
