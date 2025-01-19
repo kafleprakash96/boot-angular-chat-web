@@ -15,6 +15,10 @@
             <mat-icon>person_add</mat-icon>
             <span>Register</span>
           </button>
+          <button mat-button routerLink="/contact-us" class="nav-button contact-us-button">
+        <mat-icon>contact_mail</mat-icon>
+        <span>Contact Us</span>
+      </button>
         </ng-container>
         <ng-container *ngIf="isLoggedIn">
           <button mat-button (click)="openLogoutDialog()" class="nav-button">

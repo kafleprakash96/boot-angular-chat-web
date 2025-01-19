@@ -6,6 +6,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { AuthGuard } from './guards/auth.guard';
 import { ProfileComponent } from './components/profile/profile.component';
+import { ContactPageComponent } from './components/contact-page/contact-page.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -15,5 +16,6 @@ export const routes: Routes = [
   { path: 'chat/:id', component: ChatComponent },
   { path: 'profile', component: ProfileComponent,canActivate:[AuthGuard] },
   { path: 'profile/:username', component: ProfileComponent },
+  { path: 'contact-us', component: ContactPageComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];

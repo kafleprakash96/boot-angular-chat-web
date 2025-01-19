@@ -3,38 +3,51 @@
   justify-content: space-between;
   padding: 0 16px;
 }
+
 .toolbar-left {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .toolbar-right {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .menu-button {
   margin-right: 8px;
 }
+
 .nav-button {
   display: flex;
   align-items: center;
   gap: 4px;
 }
+
 .title {
   font-size: 20px;
   margin-left: 8px;
 }
+
 mat-icon {
   vertical-align: middle;
 }
 
 .header-icon {
-  color: rgba(255, 255, 255, 0.87); 
-  transition: color 0.3s ease, transform 0.3s ease; 
+  color: rgba(255, 255, 255, 0.87);
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .header-icon:hover {
-  color: #ffffff; 
-  transform: scale(1.1); 
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+/* Line between Register and Contact Us */
+.contact-us-button {
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  padding-left: 16px;
+  margin-left: 16px;
 }
