@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatCardModule } from '@angular/material/card';
 import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contact-page',
@@ -16,7 +17,7 @@ export class ContactPageComponent {
 
   contactForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {}
+  constructor(private fb: FormBuilder, private http: HttpClient,private router: Router) {}
 
   ngOnInit(): void {
     // Initialize the form group with form controls
@@ -28,20 +29,13 @@ export class ContactPageComponent {
   }
 
   onSubmit(): void {
-    if (this.contactForm.valid) {
-      console.log("Name: ", this.contactForm.get('name')?.value )
-      // Send form data to the backend
-      this.http.post('/api/contact/send', this.contactForm.value).subscribe(
-        response => {
-          console.log('Message sent successfully:', response);
-          alert('Your message has been sent!');
-        },
-        error => {
-          console.error('Error sending message:', error);
-          alert('There was an error sending your message.');
-        }
-      );
-    }
+    //Todo : Integrate email with backend
+    console.log("Email sent");
+  }
+
+  onCancel() {
+    // Navigate back to the Home page
+    this.router.navigate(['/']);
   }
 
 }

@@ -17,9 +17,14 @@
         <textarea matInput formControlName="message" required placeholder="Enter your message" rows="10"></textarea>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" type="submit" [disabled]="!contactForm.valid">
-        Send Message
-      </button>
+      <div class="button-group">
+        <button mat-raised-button color="primary" type="submit" [disabled]="!contactForm.valid">
+          Send Message
+        </button>
+        <button mat-raised-button color="accent" (click)="onCancel()" type="button">
+          Cancel
+        </button>
+      </div>
     </form>
   </mat-card>
 </div>
