@@ -2,7 +2,7 @@ package com.prkcode.chatwebbackend.service;
 
 import com.prkcode.chatwebbackend.dto.ProfileDto;
 import com.prkcode.chatwebbackend.model.Profile;
-import com.prkcode.chatwebbackend.model.ProfileRepository;
+import com.prkcode.chatwebbackend.repository.ProfileRepository;
 import com.prkcode.chatwebbackend.model.User;
 import com.prkcode.chatwebbackend.repository.UserRepository;
 import com.prkcode.chatwebbackend.utils.FileStorageUtils;
@@ -23,9 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -97,6 +95,7 @@ public class ProfileService {
 
         // Compress image to standard size (e.g., 800px width)
         byte[] compressedImage = imageUtils.compressImage(file.getBytes(), PROFILE_PHOTO_WIDTH, format);
+        System.out.println(compressedImage.length);
 
         // Create uploads directory if it doesn't exist
         File directory = new File(uploadDir);
@@ -148,46 +147,99 @@ public class ProfileService {
         return modelMapper.map(updatedProfile,ProfileDto.class);
     }
 
+    //ToDo : Replace model with dto and make upload picture a common method
     @Transactional
-    public Profile updateCoverPicture(String username, MultipartFile file) throws IOException {
-        // Validate file format
-        String contentType = file.getContentType();
-        if (!imageUtils.isValidImageFormat(contentType)) {
-            throw new IllegalArgumentException("Invalid image format. Supported formats are: jpeg, jpg, png");
+    public User updateCoverPicture(MultipartFile file) throws IOException{
+        if (!imageUtils.isValidImageFormat(file.getContentType())) {
+            throw new IllegalArgumentException("Invalid image format. Only JPG, JPEG, and PNG are allowed.");
         }
 
-        // Get current user profile
-        Profile userProfile = profileRepository.findByUserUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User profile not found"));
+        // Extract file extension from original filename
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = "";
+        String format = "";
 
-        // Process the image
-        byte[] compressedImage = imageUtils.compressImage(
-                file.getBytes(),
-                COVER_PHOTO_WIDTH,
-                contentType.replace("image/", "")
-        );
-
-        // Generate unique filename
-        String fileName = "cover_" + username + "_" + System.currentTimeMillis() + "." +
-                contentType.replace("image/", "");
-
-        // Save the file and get URL
-        String fileUrl = fileUtils.saveFile(compressedImage, fileName, contentType);
-
-        // Delete old cover picture if exists
-        if (userProfile.getCoverPictureUrl() != null) {
-            try {
-                fileUtils.deleteFile(userProfile.getCoverPictureUrl());
-            } catch (Exception e) {
-                // Log error but don't fail the upload
-                System.out.println("Failed to delete old cover picture: " + e.getMessage());
-            }
+        if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
         }
 
-        // Update user profile
-        userProfile.setCoverPictureUrl(fileUrl);
-        userProfile.setLastUpdated(LocalDateTime.now());
-        return profileRepository.save(userProfile);
+        // Map file extension to format
+        switch (fileExtension) {
+            case ".jpg":
+            case ".jpeg":
+                format = "jpg";
+                break;
+            case ".png":
+                format = "png";
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported file extension: " + fileExtension);
+        }
+
+        // Compress image to standard size (e.g., 800px width)
+        byte[] compressedImage = imageUtils.compressImage(file.getBytes(), COVER_PHOTO_WIDTH, format);
+
+        // Create uploads directory if it doesn't exist
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // Get current user and generate unique filename
+        User currentUser = getCurrentUser();
+        String username = currentUser.getUsername();
+        String filename = username + "-cover" + fileExtension;
+        Path filepath = Paths.get(uploadDir, filename);
+
+        // Save compressed file
+        Files.write(filepath, compressedImage);
+
+        //Todo : update with fileutils
+        // Update user profile picture path
+        currentUser.setProfilePicture("/uploads/" + filename);
+        return userRepository.save(currentUser);
     }
+
+//    @Transactional
+//    public Profile updateCoverPicture(String username, MultipartFile file) throws IOException {
+//        // Validate file format
+//        String contentType = file.getContentType();
+//        if (!imageUtils.isValidImageFormat(contentType)) {
+//            throw new IllegalArgumentException("Invalid image format. Supported formats are: jpeg, jpg, png");
+//        }
+//
+//        // Get current user profile
+//        Profile userProfile = profileRepository.findByUserUsername(username)
+//                .orElseThrow(() -> new EntityNotFoundException("User profile not found"));
+//
+//        // Process the image
+//        byte[] compressedImage = imageUtils.compressImage(
+//                file.getBytes(),
+//                COVER_PHOTO_WIDTH,
+//                contentType.replace("image/", "")
+//        );
+//
+//        // Generate unique filename
+//        String fileName = "cover_" + username + "_" + System.currentTimeMillis() + "." +
+//                contentType.replace("image/", "");
+//
+//        // Save the file and get URL
+//        String fileUrl = fileUtils.saveFile(compressedImage, fileName, contentType);
+//
+//        // Delete old cover picture if exists
+//        if (userProfile.getCoverPictureUrl() != null) {
+//            try {
+//                fileUtils.deleteFile(userProfile.getCoverPictureUrl());
+//            } catch (Exception e) {
+//                // Log error but don't fail the upload
+//                System.out.println("Failed to delete old cover picture: " + e.getMessage());
+//            }
+//        }
+//
+//        // Update user profile
+//        userProfile.setCoverPictureUrl(fileUrl);
+//        userProfile.setLastUpdated(LocalDateTime.now());
+//        return profileRepository.save(userProfile);
+//    }
 
 }
