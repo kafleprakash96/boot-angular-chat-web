@@ -43,7 +43,7 @@ export class ProfileComponent implements OnInit {
   @ViewChild('coverPhotoInput') coverPhotoInput !: ElementRef;
 
 
-  private baseUrl = "http://localhost:8080"
+  private profileApiUrl = "http://localhost:8080/api/v1/profile"
 
   constructor(
     private route: ActivatedRoute,
@@ -63,7 +63,9 @@ export class ProfileComponent implements OnInit {
       githubUrl: [''],
       linkedinUrl: [''],
       twitterUrl: [''],
-      visibility: ['PUBLIC']
+      visibility: ['PUBLIC'],
+      profilePictureUrl : [''],
+      coverPictureUrl: [''],
     });
   }
 
@@ -144,11 +146,14 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-
-  getImageUrl(path: string | null | undefined): string {
-    if (!path) return 'assets/default-avatar.png';
-    if (path.startsWith('http')) return path;
-    return `${this.baseUrl}${path}`;
+    getImageUrl(path : string | null | undefined): string {
+    console.log(path)
+    if (!path) {
+      return 'assets/defalt.png'
+    }
+    console.log(path)
+    return path;
+  
   }
 
   // Update file upload methods

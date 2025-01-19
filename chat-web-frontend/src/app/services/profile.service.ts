@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, map } from 'rxjs';
 import { User } from '../interface/user';
 import { BehaviorSubject } from 'rxjs';
 
@@ -29,7 +29,8 @@ export class ProfileService {
     this.http.get<User>(`${this.profileApiUrl}/current`, options).subscribe({
       next: (user) => {
         if (user.profilePictureUrl) {
-          user.profilePictureUrl = this.getProfilePictureUrl(user.profilePictureUrl);
+          user.profilePictureUrl = this.getImageUrl(user.username,'profile');
+          user.coverPictureUrl = this.getImageUrl(user.username, 'cover');
         }
         this.currentUserSubject.next(user);
       },
@@ -37,22 +38,32 @@ export class ProfileService {
     });
   }
 
-  getProfilePictureUrl(relativePath: string | null): string {
-    if (!relativePath) {
-      return 'assets/default-avatar.png';
+  getImageUrl(username: string, type: 'profile' | 'cover'): string {
+    if (!username) {
+      return type === 'profile' ? 'assets/default-avatar.png' : 'assets/default-cover.png';
     }
-    return relativePath.startsWith('http') 
-      ? relativePath 
-      : `http://localhost:8080${relativePath}`;  // Use full backend URL
+    return `${this.profileApiUrl}/image/${username}/${type}`;
   }
 
+  // getUserProfile(username: string): Observable<User> {
+  //   // Public endpoint - no authentication required
+  //   return this.http.get<User>(`${this.profileApiUrl}/${username}`).pipe(
+  //     tap(user => {
+  //       if (user.profilePictureUrl) {
+  //         user.profilePictureUrl = this.getImageUrl(user.username,'profile');
+  //       }
+  //     })
+  //   );
+  // }
+
   getUserProfile(username: string): Observable<User> {
-    // Public endpoint - no authentication required
     return this.http.get<User>(`${this.profileApiUrl}/${username}`).pipe(
-      tap(user => {
-        if (user.profilePictureUrl) {
-          user.profilePictureUrl = this.getProfilePictureUrl(user.profilePictureUrl);
+      map(user => {
+        if (user.username) {
+          user.profilePictureUrl = this.getImageUrl(user.username, 'profile');
+          user.coverPictureUrl = this.getImageUrl(user.username, 'cover');
         }
+        return user;
       })
     );
   }
@@ -64,7 +75,8 @@ export class ProfileService {
       .pipe(
         tap(user => {
           if (user.profilePictureUrl) {
-            user.profilePictureUrl = this.getProfilePictureUrl(user.profilePictureUrl);
+            user.profilePictureUrl = this.getImageUrl(user.username,'profile');
+            user.profilePictureUrl = this.getImageUrl(user.username,'cover');
           }
           this.currentUserSubject.next(user);
         })
@@ -77,37 +89,66 @@ export class ProfileService {
 
     const options = { headers: new HttpHeaders({
       'Authorization': `Bearer ${this.getToken()}`
-      // Don't set Content-Type here - browser will set it automatically with boundary for multipart/form-data
     })};
 
-    return this.http.put<User>(`${this.profileApiUrl}/profile-picture`, formData, options)
+    return this.http.put<User>(`${this.profileApiUrl}/upload/profile-picture`, formData, options)
       .pipe(
         tap(user => {
           if (user.profilePictureUrl) {
-            user.profilePictureUrl = this.getProfilePictureUrl(user.profilePictureUrl);
+            user.profilePictureUrl = this.getImageUrl(user.username,'profile');
           }
           this.currentUserSubject.next(user);
         })
       );
   }
 
+
+
+
   private getToken(): string {
     return localStorage.getItem('token') || '';
   }
+
+  // updateCoverPicture(file: File): Observable<any> {
+  //   const formData = new FormData();
+  //   formData.append('file', file);
+
+  //   const options = { headers: new HttpHeaders({
+  //     'Authorization': `Bearer ${this.getToken()}`
+  //     // Don't set Content-Type here - browser will set it automatically with boundary for multipart/form-data
+  //   })};
+
+  //   return this.http.put<any>(`${this.profileApiUrl}/upload/cover-picture`, formData,options)
+  //     .pipe(
+  //       tap(user => {
+  //         // Update the current user in the behavior subject if it's the logged-in user
+  //         if (this.currentUserSubject.value?.id === user.id) {
+  //           this.currentUserSubject.next(user);
+  //         }
+  //       })
+  //     );
+  // }
 
   updateCoverPicture(file: File): Observable<User> {
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post<User>(`${this.profileApiUrl}/update/cover-picture`, formData)
+    const options = { headers: new HttpHeaders({
+      'Authorization': `Bearer ${this.getToken()}`
+      // Don't set Content-Type here - browser will set it automatically with boundary for multipart/form-data
+    })};
+
+    return this.http.put<User>(`${this.profileApiUrl}/upload/cover-picture`, formData,options)
       .pipe(
-        tap(user => {
-          // Update the current user in the behavior subject if it's the logged-in user
-          if (this.currentUserSubject.value?.id === user.id) {
-            this.currentUserSubject.next(user);
+        map(user => {
+          if(user.username){
+            user.coverPictureUrl = this.getImageUrl(user.username,'cover');
           }
+          this.currentUserSubject.next(user);
+          return user
         })
       );
+        
   }
 
 
