@@ -1,0 +1,58 @@
+
+  /* About Page Container */
+  .about-container {
+    margin: 40px auto;
+    max-width: 1200px;
+    padding: 20px;
+  }
+  
+  .about-card {
+    background-color: var(--secondary-color);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  /* Title and Description */
+  .about-title {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  
+  .about-description {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 30px;
+  }
+  
+  /* Key Features */
+  .about-features-title {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+  
+  .about-features-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 30px;
+  }
+  
+  .about-contact {
+    font-size: 1.2rem;
+    color: var(--text-color);
+  }
+  
+  .contact-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .contact-link:hover {
+    text-decoration: underline;
+  }
