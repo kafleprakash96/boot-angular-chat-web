@@ -7,6 +7,7 @@ import {MatGridList, MatGridTile} from '@angular/material/grid-list';
 import {MatButton} from '@angular/material/button';
 import { HeaderComponent } from '../header/header.component';
 import { AboutPageComponent } from '../about-page/about-page.component';
+import { ContactPageComponent } from '../contact-page/contact-page.component';
 
 ;
 
@@ -19,7 +20,7 @@ import { AboutPageComponent } from '../about-page/about-page.component';
     MatGridTile,
     MatCard,
     MatIcon,
-  MatButton,HeaderComponent,AboutPageComponent],
+  MatButton,HeaderComponent,AboutPageComponent,ContactPageComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
