@@ -5,7 +5,7 @@ import {RoomService} from '../../services/room.service';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { RoomCardComponent } from '../room-card/room-card.component';
 import { FormsModule, NgModel } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,38 +18,55 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { HeaderComponent } from '../header/header.component';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { PostService } from '../../services/post.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDividerModule } from '@angular/material/divider';
+import { PostCardComponent } from '../post-card/post-card.component';
+import { PostCreateDialogComponent } from '../post-create-dialog/post-create-dialog.component';
 
 
 @Component({
   selector: 'app-dashboard',
   imports: [RoomCardComponent,
+    CommonModule,
     FormsModule,
     NgFor,
     MatCardModule,
-    MatSidenavModule,MatToolbarModule,MatButtonModule,MatIconModule,MatMenuModule,SideMenuComponent,HeaderComponent],
+    MatTabsModule,
+    MatFormFieldModule,
+    MatDividerModule,
+    PostCardComponent,
+    MatSidenavModule,MatToolbarModule,MatButtonModule,MatIconModule,MatMenuModule,SideMenuComponent,HeaderComponent,PostCardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
-
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
   rooms: any[] = [];
   newRoomName: string = '';
   username: string = '';
   searchText: string = '';
+  posts: any[] = [];
+  selectedTab = 0;
 
   constructor(
     private roomService: RoomService,
     private dialog: MatDialog,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private postService: PostService
   ) {}
 
   ngOnInit() {
     
     this.username = this.authService.currentUser?.username || '';
-    this.loadRooms();
+    if (this.selectedTab === 0) {
+      this.loadRooms(); // Default to Chat Rooms
+    } else if (this.selectedTab === 1) {
+      this.loadPosts();
+    }
   }
 
   loadRooms() {
@@ -71,6 +88,48 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  loadPosts() {
+    this.postService.getPosts().subscribe(posts => {
+      this.posts = posts;
+    });
+  }
+
+  createPost() {
+    const dialogRef = this.dialog.open(PostCreateDialogComponent, {
+      width: '400px'
+    });
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadPosts();
+      }
+    });
+  }
+
+  likePost(postId: string) {
+    this.postService.likePost(postId).subscribe(
+      response => {
+        // Update post in the posts array
+        const postIndex = this.posts.findIndex(p => p.id === postId);
+        if (postIndex !== -1) {
+          this.posts[postIndex] = { ...this.posts[postIndex], ...response };
+        }
+      }
+    );
+  }
+
+  addComment(postId: string, comment: string) {
+    this.postService.addComment(postId, comment).subscribe(
+      response => {
+        // Update post comments in the posts array
+        const postIndex = this.posts.findIndex(p => p.id === postId);
+        if (postIndex !== -1) {
+          this.posts[postIndex] = { ...this.posts[postIndex], ...response };
+        }
+      }
+    );
+  }
+
   joinRoom(room: any) {
     // Implement room joining logic
   }
@@ -86,6 +145,17 @@ export class DashboardComponent implements OnInit {
   onToggleSidenav(): void {
     console.log("side menu clicked")
     this.sidenav.toggle();
+  }
+
+  onTabChange(index: number) {
+
+    this.selectedTab = index;
+    if (this.selectedTab === 0) {
+      this.loadRooms();
+    }
+    else if (this.selectedTab === 1) {
+      this.loadPosts();
+    }
   }
 
 }

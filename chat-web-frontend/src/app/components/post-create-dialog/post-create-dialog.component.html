@@ -1,0 +1,37 @@
+<!-- components/create-post-dialog/create-post-dialog.component.html -->
+<h2 mat-dialog-title>Create New Post</h2>
+<mat-dialog-content>
+  <form [formGroup]="postForm" class="post-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" placeholder="Enter post title">
+      <mat-error *ngIf="postForm.get('title')?.errors?.['required']">
+        Title is required
+      </mat-error>
+      <mat-error *ngIf="postForm.get('title')?.errors?.['minlength']">
+        Title must be at least 3 characters
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Content</mat-label>
+      <textarea matInput formControlName="content" 
+                placeholder="What's on your mind?"
+                rows="6"></textarea>
+      <mat-error *ngIf="postForm.get('content')?.errors?.['required']">
+        Content is required
+      </mat-error>
+      <mat-error *ngIf="postForm.get('content')?.errors?.['minlength']">
+        Content must be at least 10 characters
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" 
+          (click)="onSubmit()"
+          [disabled]="!postForm.valid">
+    Create Post
+  </button>
+</mat-dialog-actions>

@@ -11,18 +11,6 @@
       </button>
     </mat-card>
 
-    <!-- Posts Section -->
-    <div class="posts-section" *ngIf="isLoggedIn">
-      <mat-card class="create-post-card">
-        <button mat-raised-button color="primary">
-          <mat-icon>add</mat-icon> Create New Post
-        </button>
-      </mat-card>
-      
-      <!-- <app-post-list></app-post-list> -->
-    </div>
-
-    <!-- Welcome Features for Non-logged in users -->
     <div class="features-container" *ngIf="!isLoggedIn">
       <mat-grid-list cols="3" rowHeight="300px" gutterSize="20">
         <mat-grid-tile>
