@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,5 +30,13 @@ public class UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public List<User> getAllUsers(){
+        return userRepository.findAllUsers();
+    }
+
+    public List<User> getAllOtherUsers(Long currentUserId){
+        return userRepository.findAllOtherUsers(currentUserId);
     }
 }

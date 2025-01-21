@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*")
@@ -86,5 +87,19 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/users/all")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    // Optional: Get all users except current user
+    @GetMapping("/users/others")
+    public ResponseEntity<List<User>> getAllOtherUsers(@RequestParam Long currentUserId) {
+        List<User> users = userService.getAllOtherUsers(currentUserId);
+        return ResponseEntity.ok(users);
+    }
+
 
 }
