@@ -49,12 +49,14 @@
               </div>
             </div>
             <!-- Replace the existing post cards section in dashboard.component.html -->
-            <div class="posts-container">
+            <div class="rooms-grid">
               <app-post-card
                 *ngFor="let post of posts"
                 [post]="post"
                 (like)="likePost($event)"
                 (comment)="addComment($event.postId, $event.content)"
+                
+
               ></app-post-card>
               <!-- Todo: (reply)="addReply($event.commentId, $event.content)"-->
             </div>

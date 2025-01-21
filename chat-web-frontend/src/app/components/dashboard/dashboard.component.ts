@@ -88,10 +88,30 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // loadPosts() {
+  //   this.postService.getPosts().subscribe(posts => {
+  //     this.posts = posts;
+  //   });
+  // }
+
+  
+  //Todo
   loadPosts() {
-    this.postService.getPosts().subscribe(posts => {
-      this.posts = posts;
-    });
+    this.postService.getPosts().subscribe(
+      (response: any) => {
+        this.posts = response.map((post: any) => ({
+          id: post.id,
+          title: post.title || 'Untitled Post', // Fallback title if none exists
+          content: post.content,
+          author: post.author || 'Anonymous',
+          likes: post.likes || 0,
+          comments: post.comments || [],
+          createdAt: new Date(post.createdAt),
+          isLiked: post.isLiked || false
+        }));
+      },
+      error => console.error('Error loading posts:', error)
+    );
   }
 
   createPost() {
@@ -128,6 +148,10 @@ export class DashboardComponent implements OnInit {
         }
       }
     );
+  }
+  addReply(postId: string, commentId: string, reply: string) {
+    //Todo
+    console.log("reply added")
   }
 
   joinRoom(room: any) {

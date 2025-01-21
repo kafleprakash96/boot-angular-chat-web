@@ -8,6 +8,7 @@ import {MatButton} from '@angular/material/button';
 import { HeaderComponent } from '../header/header.component';
 import { AboutPageComponent } from '../about-page/about-page.component';
 import { ContactPageComponent } from '../contact-page/contact-page.component';
+import { CommonModule } from '@angular/common';
 
 ;
 

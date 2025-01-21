@@ -2,7 +2,8 @@
 <mat-card class="post-card">
   <mat-card-header>
     <img mat-card-avatar [src]="'assets/default-avatar.png'" alt="User avatar">
-    <mat-card-title>{{ post.author }}</mat-card-title>
+    <!-- Todo: Just get username in post-->
+    <mat-card-title>{{ post.author.username }}</mat-card-title>
     <mat-card-subtitle>{{ post.createdAt | date:'medium' }}</mat-card-subtitle>
   </mat-card-header>
 
