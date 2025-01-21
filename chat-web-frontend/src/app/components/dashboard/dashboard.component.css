@@ -62,3 +62,26 @@
   color: rgba(0, 0, 0, 0.87);
   transition: all 0.
 }
+
+.content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px; /* Add spacing between the tab group and side-user */
+}
+
+.tab-container {
+  flex-grow: 1; /* Allow the tab container to take up the remaining space */
+}
+
+.side-user {
+  flex-shrink: 0; /* Prevent shrinking */
+  width: 250px; /* Set a smaller width */
+  max-width: 100%; /* Ensure responsiveness */
+  background: #f9f9f9; /* Light background color */
+  border: 1px solid #ddd; /* Border for separation */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 16px; /* Inner padding */
+  font-size: 14px; /* Adjust text size */
+}
