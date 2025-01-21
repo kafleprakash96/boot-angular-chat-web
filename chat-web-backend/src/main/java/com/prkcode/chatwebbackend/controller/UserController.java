@@ -1,8 +1,6 @@
 package com.prkcode.chatwebbackend.controller;
 
-import com.prkcode.chatwebbackend.dto.AuthenticationRequest;
-import com.prkcode.chatwebbackend.dto.AuthenticationResponse;
-import com.prkcode.chatwebbackend.dto.RegisterRequest;
+import com.prkcode.chatwebbackend.dto.*;
 import com.prkcode.chatwebbackend.model.User;
 import com.prkcode.chatwebbackend.service.AuthenticationService;
 import com.prkcode.chatwebbackend.service.JwtService;
@@ -10,11 +8,15 @@ import com.prkcode.chatwebbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,6 +101,30 @@ public class UserController {
     public ResponseEntity<List<User>> getAllOtherUsers(@RequestParam Long currentUserId) {
         List<User> users = userService.getAllOtherUsers(currentUserId);
         return ResponseEntity.ok(users);
+    }
+
+    //Websocket controller for user status
+    @MessageMapping("/user.status")
+    @SendTo("/topic/user-status")
+    public UserStatusDto handleUserStatus(Principal principal, StatusUpdateRequest request){
+        if(principal == null){
+            throw new IllegalStateException("User is not authenticated");
+        }
+        Long userId = getUserIdFromPrincipal(principal);
+        System.out.println("User id: " + userId + ", Online: " + request.isOnline());
+        return new UserStatusDto(userId,request.isOnline());
+    }
+
+
+    private Long getUserIdFromPrincipal(Principal principal) {
+        if (principal instanceof UsernamePasswordAuthenticationToken) {
+            UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) principal;
+            User user = (User) auth.getPrincipal();
+            System.out.println("User Details: " + user);
+            // Assuming username is the user ID
+            return user.getId();
+        }
+        throw new IllegalStateException("Invalid authentication type");
     }
 
 

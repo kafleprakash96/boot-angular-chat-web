@@ -26,4 +26,5 @@ public class UserDto {
     private Role role;
 
     private LocalDateTime createdAt;
+    private boolean isOnline;
 }
