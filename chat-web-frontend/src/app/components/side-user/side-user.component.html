@@ -1,1 +1,29 @@
-<p>side-user works!</p>
+<!-- side-user.component.html -->
+<div class="side-user-container">
+  <mat-tab-group [(selectedIndex)]="selectedTab">
+    <mat-tab label="All"></mat-tab>
+    <mat-tab label="Friends"></mat-tab>
+  </mat-tab-group>
+  
+  <div class="users-list">
+    <div *ngIf="loading" class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading users...</p>
+    </div>
+
+    <div *ngIf="error" class="error-state">
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-button color="primary" (click)="loadUsers()">Try Again</button>
+    </div>
+
+    <div *ngIf="!loading && !error">
+      <app-user
+        *ngFor="let user of filteredUsers"
+        [user]="user"
+        (sendRequest)="sendFriendRequest($event)"
+        (viewProfile)="viewProfile($event)"
+      ></app-user>
+    </div>
+  </div>
+</div>

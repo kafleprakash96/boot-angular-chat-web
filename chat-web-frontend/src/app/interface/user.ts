@@ -20,4 +20,5 @@ export interface User {
     visibility: 'PUBLIC' | 'PRIVATE';
     emailVerified: boolean;
     phoneVerified: boolean;
+    isFriend?: boolean;
 }

@@ -1,0 +1,17 @@
+.user-container {
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 8px;
+    background-color: var(--background-light);
+}
+
+.user-container:hover {
+    background-color: var(--primary-light);
+    color: var(--white);
+}
+
+.username{
+    font-weight: 500;
+}

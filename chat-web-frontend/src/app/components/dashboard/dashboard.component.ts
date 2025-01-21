@@ -24,11 +24,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDividerModule } from '@angular/material/divider';
 import { PostCardComponent } from '../post-card/post-card.component';
 import { PostCreateDialogComponent } from '../post-create-dialog/post-create-dialog.component';
+import { SideUserComponent } from '../side-user/side-user.component';
 
 
 @Component({
   selector: 'app-dashboard',
   imports: [RoomCardComponent,
+    SideUserComponent,
     CommonModule,
     FormsModule,
     NgFor,

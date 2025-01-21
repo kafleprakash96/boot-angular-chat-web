@@ -1,1 +1,12 @@
-<p>user works!</p>
+<div class="user-container" 
+     (mouseenter)="onMouseEnter()" 
+     (mouseleave)="onMouseLeave()"
+     (click)="onViewProfile()">
+  <div class="username">{{ user.username }}</div>
+  <app-user-dialog
+    *ngIf="showDialog"
+    [user]="user"
+    (sendRequest)="onSendRequest()"
+    (viewProfile)="onViewProfile()"
+  ></app-user-dialog>
+</div>

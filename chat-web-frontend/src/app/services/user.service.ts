@@ -11,6 +11,7 @@ export class UserService {
 
   
     private apiUrl = 'http://localhost:8080/api/profile';
+    private userApiUrl = 'http://localhost:8080/api/v1/auth';
   
     constructor(
       private http: HttpClient,
@@ -44,5 +45,9 @@ export class UserService {
           localStorage.setItem('currentUser', JSON.stringify(updatedUser));
         })
       );
+    }
+
+    getAllUsers(): Observable<User[]> {
+      return this.http.get<User[]>(`${this.userApiUrl}/users/all`);
     }
 }

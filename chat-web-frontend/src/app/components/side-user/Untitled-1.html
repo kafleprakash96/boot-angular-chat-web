@@ -1,0 +1,45 @@
+<app-header [isLoggedIn]="false"></app-header>
+<div class="home-container">
+
+  <div class="content-container">
+    <mat-card class="welcome-card">
+      <h1 class="welcome-title">Welcome to Guff Chautari</h1>
+      <p class="welcome-subtitle">
+        Experience real-time conversations in a modern, secure environment
+      </p>
+      <button mat-raised-button color="primary" class="get-started-btn" (click)="navigate('/register')">
+        Get Started
+      </button>
+    </mat-card>
+
+    <div class="features-container">
+      <mat-grid-list cols="3" rowHeight="300px" gutterSize="20">
+        <mat-grid-tile>
+          <mat-card class="feature-card">
+            <mat-icon class="feature-icon">group</mat-icon>
+            <h3 class="feature-title">Custom Rooms</h3>
+            <p>Create and join custom chat rooms for different topics and teams</p>
+          </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+          <mat-card class="feature-card">
+            <mat-icon class="feature-icon">lock</mat-icon>
+            <h3 class="feature-title">Secure Chats</h3>
+            <p>Your conversations are protected with enterprise-grade security</p>
+          </mat-card>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+          <mat-card class="feature-card">
+            <mat-icon class="feature-icon">bolt</mat-icon>
+            <h3 class="feature-title">Real-time Updates</h3>
+            <p>Experience instant message delivery and live updates</p>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+</div>
+<app-about-page></app-about-page>
+<app-contact-page></app-contact-page>
