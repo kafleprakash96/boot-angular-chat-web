@@ -1,116 +1,101 @@
-/* user-dialog.component.css */
 .user-dialog {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: calc(100% + 8px);
-    width: 320px;
-    background-color: var(--white);
+    position: fixed; 
+    background: white;
     border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    animation: slideIn 0.2s ease-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    z-index: 999; 
+    width: 280px;
+    animation: fadeIn 0.2s ease-in-out;
+    
   }
-  
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-50%) translateX(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(-50%) translateX(0);
-    }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .user-dialog::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 50%;
-    transform: translateY(-50%) rotate(45deg);
-    width: 12px;
-    height: 12px;
-    background-color: var(--white);
-    border-left: 1px solid rgba(0, 0, 0, 0.08);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .profile-section {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.profile-section {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.profile-picture {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-info h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.username {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 12px;
+}
+
+.location mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  margin-right: 4px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.dialog-actions button {
+  flex: 1;
+  font-size: 12px;
+  padding: 4px 8px;
+  min-height: 32px;
+}
+
+.view-profile-btn {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.send-request-btn {
+  background-color: #1976d2;
+  color: white;
+}
+
+.dialog-actions mat-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  margin-right: 4px;
+}
+
+@media (max-width: 768px) {
+  .user-dialog {
+    width: 240px;
   }
-  
-  .profile-picture {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--primary-light);
-    margin-right: 16px;
-  }
-  
-  .user-info {
-    flex: 1;
-  }
-  
-  .user-info h3 {
-    margin: 0 0 4px 0;
-    color: var(--text-primary);
-    font-size: 1.2rem;
-    font-weight: 500;
-  }
-  
-  .username {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-  }
-  
-  .location {
-    display: flex;
-    align-items: center;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-top: 4px;
-  }
-  
-  .location mat-icon {
-    font-size: 16px;
-    height: 16px;
-    width: 16px;
-    margin-right: 4px;
-  }
-  
-  .dialog-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 16px;
-  }
-  
-  .dialog-actions button {
-    flex: 1;
-    padding: 8px 16px;
-  }
-  
-  .view-profile-btn {
-    background-color: var(--primary-color);
-    color: white;
-  }
-  
-  .send-request-btn {
-    background-color: var(--primary-light);
-    color: white;
-  }
-  
-  /* Hover effects */
-  .dialog-actions button:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-    transition: all 0.2s ease;
-  }
+}

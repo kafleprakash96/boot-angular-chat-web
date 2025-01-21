@@ -16,8 +16,25 @@ export class UserComponent {
 
   showDialog = false;
 
-  onMouseEnter() {
+  onMouseEnter(event: MouseEvent) {
     this.showDialog = true;
+    // Wait for dialog to be rendered
+    setTimeout(() => {
+      const dialog = document.querySelector('.user-dialog') as HTMLElement;
+      const userElement = event.currentTarget as HTMLElement;
+      const rect = userElement.getBoundingClientRect();
+      
+      // Position the dialog to the right of the user element
+      dialog.style.top = `${rect.top}px`;
+      dialog.style.left = `${rect.right + 10}px`; // 10px gap
+      
+      // Check if dialog goes off-screen to the right
+      const dialogRect = dialog.getBoundingClientRect();
+      if (dialogRect.right > window.innerWidth) {
+        // Position to the left instead
+        dialog.style.left = `${rect.left - dialogRect.width - 10}px`;
+      }
+    });
   }
 
   onMouseLeave() {

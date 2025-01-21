@@ -1,5 +1,5 @@
 <div class="user-container" 
-     (mouseenter)="onMouseEnter()" 
+     (mouseenter)="onMouseEnter($event)" 
      (mouseleave)="onMouseLeave()"
      (click)="onViewProfile()">
   <div class="username">{{ user.username }}</div>
