@@ -1,7 +1,7 @@
 import { Component,  ElementRef,  OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject } from 'rxjs';
+import { Subject,switchMap,tap,pipe,take } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { User } from '../../interface/user';
 import { AuthService } from '../../services/auth.service';
@@ -43,8 +43,6 @@ export class ProfileComponent implements OnInit {
   @ViewChild('coverPhotoInput') coverPhotoInput !: ElementRef;
 
 
-  private profileApiUrl = "http://localhost:8080/api/v1/profile"
-
   constructor(
     private route: ActivatedRoute,
     private profileService: ProfileService,
@@ -70,37 +68,58 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const username = params['username'];
-      if (username) {
-        this.loadUserProfile(username);
-      } else {
-        this.loadCurrentUserProfile();
+    this.route.paramMap.pipe(
+      switchMap(params => {
+        const userId = params.get('userId');
+        console.log("Profile Component: userId", userId);
+        
+        if (userId && !isNaN(Number(userId))) {
+          return this.profileService.getUserProfile(Number(userId)).pipe(
+            tap(user => {
+              this.profileService.currentUser$.pipe(
+                take(1)
+              ).subscribe(currentUser => {
+                this.isCurrentUser = currentUser?.id === user.id;
+              });
+            })
+          );
+        } else {
+          this.isCurrentUser = true;
+          return this.profileService.currentUser$;
+        }
+      })
+    ).subscribe({
+      next: (user) => {
+        if (user) {
+          this.user = user;
+          if (this.isCurrentUser) {
+            this.updateFormWithUserData(user);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error loading profile:', error);
+        this.snackBar.open('Error loading profile', 'Close', { duration: 3000 });
       }
     });
   }
 
-  private loadUserProfile(username: string): void {
-    this.profileService.getUserProfile(username).subscribe(user => {
-      this.user = user;
-      this.profileService.currentUser$.subscribe(currentUser => {
-        this.isCurrentUser = currentUser?.id === user.id;
-      });
-    });
-  }
-
-  private loadCurrentUserProfile(): void {
-    this.profileService.currentUser$.subscribe(user => {
-      this.user = user;
-      this.isCurrentUser = true;
-      if (user) {
-        this.profileForm.patchValue({
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          bio: user.bio || ''  // Add bio here as well
-        });
-      }
+  private updateFormWithUserData(user: User): void {
+    this.profileForm.patchValue({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      bio: user.bio || '',
+      location: user.location || '',
+      website: user.website || '',
+      company: user.company || '',
+      occupation: user.occupation || '',
+      about: user.about || '',
+      githubUrl: user.githubUrl || '',
+      linkedinUrl: user.linkedinUrl || '',
+      twitterUrl: user.twitterUrl || '',
+      visibility: user.visibility || 'PUBLIC',
+      profilePictureUrl: user.profilePictureUrl || '',
+      coverPictureUrl: user.coverPictureUrl || ''
     });
   }
 

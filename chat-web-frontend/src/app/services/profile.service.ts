@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ProfileService {
   private readonly profileApiUrl = 'http://localhost:8080/api/v1/profile';
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  private currentUserSubject : BehaviorSubject<User|null>= new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
@@ -45,21 +45,11 @@ export class ProfileService {
     return `${this.profileApiUrl}/image/${username}/${type}`;
   }
 
-  // getUserProfile(username: string): Observable<User> {
-  //   // Public endpoint - no authentication required
-  //   return this.http.get<User>(`${this.profileApiUrl}/${username}`).pipe(
-  //     tap(user => {
-  //       if (user.profilePictureUrl) {
-  //         user.profilePictureUrl = this.getImageUrl(user.username,'profile');
-  //       }
-  //     })
-  //   );
-  // }
-
-  getUserProfile(username: string): Observable<User> {
-    return this.http.get<User>(`${this.profileApiUrl}/${username}`).pipe(
+  getUserProfile(userId: number): Observable<User> {
+    const options = { headers: this.getAuthHeaders() };
+    return this.http.get<User>(`${this.profileApiUrl}/${userId}`,options).pipe(
       map(user => {
-        if (user.username) {
+        if (user.id) {
           user.profilePictureUrl = this.getImageUrl(user.username, 'profile');
           user.coverPictureUrl = this.getImageUrl(user.username, 'cover');
         }

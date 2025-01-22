@@ -15,7 +15,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent},
   { path: 'chat/:id', component: ChatComponent },
   { path: 'profile', component: ProfileComponent,canActivate:[AuthGuard] },
-  { path: 'profile/:username', component: ProfileComponent },
+  { path: 'profile/:userId', component: ProfileComponent },
   { path: 'contact-us', component: ContactPageComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
