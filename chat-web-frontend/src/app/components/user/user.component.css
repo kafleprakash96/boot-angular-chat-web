@@ -1,15 +1,30 @@
 .user-container {
-    position: relative;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .user-container:hover {
-    background-color: rgba(0, 0, 0, 0.04);
-  }
-  
-  .username {
-    font-size: 14px;
-    color: #333;
-  }
+  position: relative;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.user-container:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.username {
+  font-size: 14px;
+  color: #333;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.status-dot.online {
+  background-color: #44b700;
+  box-shadow: 0 0 0 2px #fff;
+}

@@ -2,7 +2,9 @@
      (mouseenter)="onMouseEnter($event)" 
      (mouseleave)="onMouseLeave()"
      (click)="onViewProfile()">
-  <div class="username">{{ user.username }}</div>
+  <div class="username">{{ user.username }}
+    <span class="status-dot" [class.online]="isOnline"></span>
+  </div>
   <app-user-dialog
     *ngIf="showDialog"
     [user]="user"

@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output,EventEmitter } from '@angular/core';
+import { Component, Input, Output,EventEmitter,OnInit } from '@angular/core';
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
+import { WebsocketService } from '../../services/websocket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user',
@@ -8,13 +10,34 @@ import { UserDialogComponent } from '../user-dialog/user-dialog.component';
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
-export class UserComponent {
+export class UserComponent implements OnInit {
 
   @Input() user:any;
   @Output() sendRequest = new EventEmitter<number>();
   @Output() viewProfile = new EventEmitter<number>();
+  isOnline = false;
 
   showDialog = false;
+  private subscription!: Subscription;
+
+  constructor(private websocketService: WebsocketService){}
+
+  ngOnInit() {
+    console.log('User Component Initialized');
+    this.isOnline = this.websocketService.isUserOnline(this.user.id);
+    console.log('User', this.user.id, 'is online:', this.isOnline);
+
+    // Subscribing to user status updates
+    this.subscription = this.websocketService.userStatus$.subscribe(userStatusMap => {
+        console.log('User status map received in component:', userStatusMap);
+        if (userStatusMap) {
+            const userStatus = userStatusMap.get(this.user.id);
+            console.log('User status for', this.user.id, ':', userStatus);
+            this.isOnline = userStatus !== undefined ? userStatus : false;
+        }
+    });
+}
+
 
   onMouseEnter(event: MouseEvent) {
     this.showDialog = true;
@@ -51,5 +74,12 @@ export class UserComponent {
 
   onClick(): void {
     this.viewProfile.emit(this.user.id);
+  }
+
+  ngOnDestroy() {
+    if(this.subscription){
+      this.subscription.unsubscribe();
+    }
+    
   }
 }
