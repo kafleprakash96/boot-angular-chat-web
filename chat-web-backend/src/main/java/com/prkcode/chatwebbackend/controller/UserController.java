@@ -8,8 +8,10 @@ import com.prkcode.chatwebbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +19,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*")
@@ -33,6 +37,11 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    private final Map<Long,Boolean> userStatusMap = new HashMap<>();
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
 
     public UserController(AuthenticationService authenticationService,
@@ -111,7 +120,12 @@ public class UserController {
             throw new IllegalStateException("User is not authenticated");
         }
         Long userId = getUserIdFromPrincipal(principal);
-        System.out.println("User id: " + userId + ", Online: " + request.isOnline());
+        if(request.isOnline()){
+            userStatusMap.put(userId,true);
+        }else {
+            userStatusMap.remove(userId);
+        }
+        System.out.println("Current online users after update: " + userStatusMap);
         return new UserStatusDto(userId,request.isOnline());
     }
 
@@ -121,11 +135,23 @@ public class UserController {
             UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) principal;
             User user = (User) auth.getPrincipal();
             System.out.println("User Details: " + user);
-            // Assuming username is the user ID
             return user.getId();
         }
         throw new IllegalStateException("Invalid authentication type");
     }
 
+    //Synchronize all users status across multiple browser
+    @MessageMapping("/user.status.initial")
+    @SendTo("/topic/user-status-initial")
+    public void handleInitialStatusRequest(Principal principal, StatusUpdateRequest request){
+        System.out.println("Sending initial status map : " + userStatusMap);
+        Long requestingUserId = getUserIdFromPrincipal(principal);
+        System.out.println("Initial status requested by user: " + requestingUserId);
+        System.out.println("Current status map: " + userStatusMap);
+
+        // Send the current status map to the requesting client
+        messagingTemplate.convertAndSend("/topic/user-status-initial", userStatusMap);
+        System.out.println("Sent initial status map to client");
+    }
 
 }
