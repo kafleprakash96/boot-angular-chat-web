@@ -119,9 +119,9 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileDto getUserProfile(String username){
-        Profile profile = profileRepository.findByUserUsername(username)
-                .orElseThrow(()-> new RuntimeException("Profile not found for username " + username));
+    public ProfileDto getUserProfile(Long userId){
+        Profile profile = profileRepository.findByUserId(userId)
+                .orElseThrow(()-> new RuntimeException("Profile not found for userId " + userId));
         return modelMapper.map(profile, ProfileDto.class);
     }
 

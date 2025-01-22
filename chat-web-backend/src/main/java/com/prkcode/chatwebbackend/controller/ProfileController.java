@@ -40,6 +40,7 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
+
     @GetMapping("/current")
     public ResponseEntity<User> getCurrentUser() {
         return ResponseEntity.ok(userService.getCurrentUser());
@@ -60,9 +61,9 @@ public class ProfileController {
 
 
 
-    @GetMapping("/{username}")
-    public ResponseEntity<ProfileDto> getUserProfile(@PathVariable String username){
-        return ResponseEntity.ok(profileService.getUserProfile(username));
+    @GetMapping("/{userId}")
+    public ResponseEntity<ProfileDto> getUserProfile(@PathVariable Long userId){
+        return ResponseEntity.ok(profileService.getUserProfile(userId));
     }
 
 

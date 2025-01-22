@@ -54,6 +54,7 @@ public class AuthenticationService {
             );
             Optional<User> optUser = userRepository.findByUsername(request.getUsername());
 
+
             // Check if the user is present
             if (optUser.isEmpty()) {
                 throw new BadCredentialsException("Invalid Username and password");
