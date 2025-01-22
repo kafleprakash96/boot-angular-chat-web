@@ -10,18 +10,19 @@
 }
 
 .username {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 14px;
   color: #333;
 }
 
 .status-dot {
-  display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: #ccc;
-  margin-left: 5px;
-  vertical-align: middle;
+  flex-shrink: 0; /* Prevents dot from shrinking */
 }
 
 .status-dot.online {

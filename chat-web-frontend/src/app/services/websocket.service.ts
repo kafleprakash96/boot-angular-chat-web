@@ -98,7 +98,7 @@ export class WebsocketService {
     if (this.client.connected) {
       console.log('Requesting initial user status')
       this.client.publish({
-        destination: 'user.status.initial',
+        destination: '/app/user.status.initial',
         body: JSON.stringify({}),
       })
     }
