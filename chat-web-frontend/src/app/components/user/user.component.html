@@ -1,14 +1,16 @@
-<div class="user-container" 
-     (mouseenter)="onMouseEnter($event)" 
-     (mouseleave)="onMouseLeave()"
-     (click)="onViewProfile()">
-  <div class="username">{{ user.username }}
-    <span class="status-dot" [class.online]="isOnline"></span>
+<div class="user-wrapper"
+     (mouseenter)="onMouseEnter($event)"
+     (mouseleave)="onMouseLeave()">
+  <div class="user-container">
+    <div class="username">
+      {{ user.username }}
+      <span class="status-dot" [class.online]="isOnline"></span>
+    </div>
   </div>
   <app-user-dialog
     *ngIf="showDialog"
     [user]="user"
     (sendRequest)="onSendRequest()"
-    (viewProfile)="onViewProfile()"
-  ></app-user-dialog>
+    (viewProfile)="onViewProfile()">
+  </app-user-dialog>
 </div>
