@@ -1,0 +1,59 @@
+package com.prkcode.chatwebbackend.config;
+
+import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Configuration
+public class KafkaChatConfig {
+
+    @Value("${SPRING_KAFKA_BOOTSTRAP_SERVERS}")
+    private String bootstrapServers;
+
+    @Value("${SPRING_KAFKA_PRODUCER_CHAT_TOPIC}")
+    private String chatTopic;
+
+    @Value("${SPRING_KAFKA_PRODUCER_CHAT_REACTIONS_TOPIC}")
+    private String chatReactionsTopic;
+
+
+    @Bean
+    public NewTopic createChatTopic(){
+       return TopicBuilder.name(chatTopic).build();
+    }
+
+    @Bean
+    public NewTopic createChatReactionsTopic(){
+        return TopicBuilder.name(chatReactionsTopic).build();
+    }
+
+    @Bean
+    public Map<String, Object> producerConfigs() {
+        Map<String, Object> configs = new HashMap<>();
+        configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        return configs;
+    }
+
+    @Bean
+    public ProducerFactory<String, Object> producerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    // KafkaTemplate for sending messages
+    @Bean
+    public KafkaTemplate<String, Object> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+}

@@ -10,6 +10,7 @@ import com.prkcode.chatwebbackend.model.MessageReaction;
 import com.prkcode.chatwebbackend.repository.ChatMessageRepository;
 import com.prkcode.chatwebbackend.repository.MessageReactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -30,10 +31,13 @@ public class MessageReactionService {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private  KafkaTemplate<String, String> kafkaTemplate;
+    private  KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
+    @Value("${SPRING_KAFKA_PRODUCER_CHAT_REACTIONS_TOPIC}")
+    private String CHAT_REACTIONS_TOPIC;
 
     public MessageReaction addReaction(Long messageId, MessageReaction reaction) {
         ChatMessage message = chatMessageRepository.findById(messageId)
@@ -64,8 +68,8 @@ public class MessageReactionService {
             );
 
             // Serialize and send to Kafka
-            String serializedEvent = objectMapper.writeValueAsString(event);
-            kafkaTemplate.send("chat-reactions", serializedEvent);
+            Object serializedEvent = objectMapper.writeValueAsString(event);
+            kafkaTemplate.send(CHAT_REACTIONS_TOPIC, serializedEvent);
             broadcastMessageUpdate(updatedMessage);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to serialize reaction event", e);
@@ -97,7 +101,7 @@ public class MessageReactionService {
             );
 
             String serializedEvent = objectMapper.writeValueAsString(event);
-            kafkaTemplate.send("chat-reactions", serializedEvent);
+            kafkaTemplate.send(CHAT_REACTIONS_TOPIC, serializedEvent);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to serialize reaction event", e);
         }

@@ -13,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -29,7 +30,7 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
@@ -40,10 +41,16 @@ public class ChatService {
     @Autowired
     private UserService userService;
 
+    @Value("${SPRING_KAFKA_PRODUCER_CHAT_TOPIC}")
+    private String CHAT_TOPIC;
+
+    @Value("${SPRING_KAFKA_PRODUCER_CHAT_REACTIONS_TOPIC}")
+    private String CHAT_REACTIONS_TOPIC;
+
 
     public ChatService(ChatRoomRepository chatRoomRepository,
                        ChatMessageRepository chatMessageRepository,
-                       KafkaTemplate<String, String> kafkaTemplate) {
+                       KafkaTemplate<String, Object> kafkaTemplate) {
         this.chatRoomRepository = chatRoomRepository;
         this.chatMessageRepository = chatMessageRepository;
         this.kafkaTemplate = kafkaTemplate;
@@ -87,10 +94,10 @@ public class ChatService {
 
         try {
             // Serialize the message to JSON
-            String serializedMessage = objectMapper.writeValueAsString(savedMessage);
+            Object serializedMessage = objectMapper.writeValueAsString(savedMessage);
 
             // Send the JSON string to Kafka
-            kafkaTemplate.send("chat-topic", serializedMessage);
+            kafkaTemplate.send(CHAT_TOPIC, serializedMessage);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to serialize ChatMessage", e);
         }
@@ -118,34 +125,4 @@ public class ChatService {
         }
         return room.getMessages();  // Return the list of messages from the room
     }
-
-    @KafkaListener(topics = "chat-topic",groupId = "chat-group")
-    public void listen(ConsumerRecord<String,String> record){
-        try{
-            String messageJson = record.value();
-            ChatMessage message = objectMapper.readValue(messageJson,ChatMessage.class);
-            messagingTemplate.convertAndSend("/topic/room/" + message.getChatRoom().getId(),message);
-
-        }catch (JsonProcessingException e){
-            log.error("Error while processing message from kafka", e);
-        }
-    }
-
-    @KafkaListener(topics = "chat-reactions", groupId = "chat-group")
-    public void listenToReactions(ConsumerRecord<String, String> record) {
-        try {
-            String eventJson = record.value();
-            MessageReactionEvent event = objectMapper.readValue(eventJson, MessageReactionEvent.class);
-
-            // Broadcast to room-specific WebSocket topic
-            messagingTemplate.convertAndSend(
-                    "/topic/room/" + event.getRoomId() + "/reactions",
-                    event
-            );
-        } catch (JsonProcessingException e) {
-            log.error("Error while processing reaction event from kafka", e);
-        }
-    }
-
-
 }
