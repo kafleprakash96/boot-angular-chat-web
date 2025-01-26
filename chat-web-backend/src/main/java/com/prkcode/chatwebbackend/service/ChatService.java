@@ -9,6 +9,8 @@ import com.prkcode.chatwebbackend.model.MessageReaction;
 import com.prkcode.chatwebbackend.repository.ChatMessageRepository;
 import com.prkcode.chatwebbackend.repository.ChatRoomRepository;
 import com.prkcode.chatwebbackend.repository.MessageReactionRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,21 +26,15 @@ import java.util.List;
 
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class ChatService {
 
-    private final Logger log = LoggerFactory.getLogger(ChatService.class);
-
-    private final ChatRoomRepository chatRoomRepository;
-    private final ChatMessageRepository chatMessageRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
-
-    @Autowired
+    private ChatRoomRepository chatRoomRepository;
+    private ChatMessageRepository chatMessageRepository;
+    private KafkaTemplate<String, Object> kafkaTemplate;
     private SimpMessagingTemplate messagingTemplate;
-
-    @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
     private UserService userService;
 
     @Value("${SPRING_KAFKA_PRODUCER_CHAT_TOPIC}")
@@ -46,15 +42,6 @@ public class ChatService {
 
     @Value("${SPRING_KAFKA_PRODUCER_CHAT_REACTIONS_TOPIC}")
     private String CHAT_REACTIONS_TOPIC;
-
-
-    public ChatService(ChatRoomRepository chatRoomRepository,
-                       ChatMessageRepository chatMessageRepository,
-                       KafkaTemplate<String, Object> kafkaTemplate) {
-        this.chatRoomRepository = chatRoomRepository;
-        this.chatMessageRepository = chatMessageRepository;
-        this.kafkaTemplate = kafkaTemplate;
-    }
 
     public ChatRoom createRoom(String name){
         ChatRoom room = new ChatRoom();

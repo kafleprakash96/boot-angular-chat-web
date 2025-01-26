@@ -9,6 +9,7 @@ import com.prkcode.chatwebbackend.utils.FileStorageUtils;
 import com.prkcode.chatwebbackend.utils.ImageUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,25 +27,26 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class ProfileService {
 
-    @Autowired
+    
     private UserRepository userRepository;
 
-    @Autowired
+    
     private ProfileRepository profileRepository;
 
-    @Autowired
+    
     private ModelMapper modelMapper;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
 
-    @Autowired
+    
     private ImageUtils imageUtils;
 
-    @Autowired
+    
     private FileStorageUtils fileUtils;
 
     private static final int COVER_PHOTO_WIDTH = 1200;

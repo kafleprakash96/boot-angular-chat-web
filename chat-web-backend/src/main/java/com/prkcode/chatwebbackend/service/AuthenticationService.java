@@ -22,10 +22,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+    private JwtService jwtService;
+    private AuthenticationManager authenticationManager;
 
     public String register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {

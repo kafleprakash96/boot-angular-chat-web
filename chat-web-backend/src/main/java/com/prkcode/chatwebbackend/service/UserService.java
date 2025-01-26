@@ -3,6 +3,7 @@ package com.prkcode.chatwebbackend.service;
 import com.prkcode.chatwebbackend.dto.UserStatusDto;
 import com.prkcode.chatwebbackend.model.User;
 import com.prkcode.chatwebbackend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
@@ -16,12 +17,13 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
+    
     private UserRepository userRepository;
 
-    @Autowired
+    
     private SimpMessagingTemplate messagingTemplate;
 
     private final Map<Long,Boolean> userStatusMap = new ConcurrentHashMap<>();

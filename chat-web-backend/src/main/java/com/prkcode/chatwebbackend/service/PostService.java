@@ -32,11 +32,11 @@ import java.util.Optional;
 @Transactional
 public class PostService {
 
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
-    private final LikeRepository likeRepository;
-    private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
+    private PostRepository postRepository;
+    private CommentRepository commentRepository;
+    private LikeRepository likeRepository;
+    private UserRepository userRepository;
+    private ModelMapper modelMapper;
 
     public Page<PostResponse> getPosts(int page, int size, UserDetails userDetails) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());

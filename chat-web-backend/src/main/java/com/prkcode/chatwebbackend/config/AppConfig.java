@@ -3,6 +3,7 @@ package com.prkcode.chatwebbackend.config;
 import com.prkcode.chatwebbackend.dto.ProfileDto;
 import com.prkcode.chatwebbackend.model.Profile;
 import com.prkcode.chatwebbackend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,11 +14,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
+@RequiredArgsConstructor
 public class AppConfig {
 
-    @Autowired
     private UserRepository repository;
-
 
     @Bean
     public UserDetailsService userDetailsService() {

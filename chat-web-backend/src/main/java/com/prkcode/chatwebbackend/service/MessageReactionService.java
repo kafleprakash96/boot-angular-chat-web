@@ -9,6 +9,7 @@ import com.prkcode.chatwebbackend.model.ChatMessage;
 import com.prkcode.chatwebbackend.model.MessageReaction;
 import com.prkcode.chatwebbackend.repository.ChatMessageRepository;
 import com.prkcode.chatwebbackend.repository.MessageReactionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -19,21 +20,22 @@ import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class MessageReactionService {
 
-    @Autowired
+    
     private ChatMessageRepository chatMessageRepository;
 
-    @Autowired
+    
     private MessageReactionRepository messageReactionRepository;
 
-    @Autowired
+    
     private ObjectMapper objectMapper;
 
-    @Autowired
+    
     private  KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Autowired
+    
     private SimpMessagingTemplate messagingTemplate;
 
     @Value("${SPRING_KAFKA_PRODUCER_CHAT_REACTIONS_TOPIC}")
